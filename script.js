@@ -21,45 +21,45 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // --- Abelha: elemento principal (referência direta) ---
-    const abelha = document.getElementById("abelha");
-    let abelhaElement = abelha; // será usado para movimentação e colisão
-    const ABELHA_X_PERCENT = 0.35; // 35% da largura da tela
-    let abelhaY = window.innerHeight / 2 - 50;
+    // --- ABELHA (imagem a.png) - Posição 35% da largura ---
+    const abelhaImg = document.getElementById("abelha");
+    let abelhaElement = abelhaImg;       // elemento que será movido (imagem ou emoji)
+    const ABELHA_X = window.innerWidth * 0.35; // 35% da tela
+    let abelhaY = window.innerHeight / 2 - 50; // posição vertical inicial
 
-    // Fallback: se a imagem a.png não existir, usa emoji
-    if (abelha) {
-        abelha.onerror = function() {
+    // Fallback se a imagem não existir
+    if (abelhaImg) {
+        abelhaImg.onerror = () => {
             console.warn("🐝 Imagem a.png não encontrada. Usando emoji.");
-            const emoji = document.createElement('div');
-            emoji.id = 'abelha-emoji';
-            emoji.textContent = '🐝';
-            emoji.style.cssText = 'position:absolute; font-size:80px; z-index:15; animation:flutuar 0.3s infinite alternate; pointer-events:none;';
-            emoji.style.left = (window.innerWidth * ABELHA_X_PERCENT) + 'px';
-            emoji.style.top = abelhaY + 'px';
-            abelha.style.display = 'none';
-            abelha.parentNode.appendChild(emoji);
+            const emoji = document.createElement("div");
+            emoji.id = "abelha-emoji";
+            emoji.textContent = "🐝";
+            emoji.style.cssText = "position:absolute; font-size:80px; z-index:15; animation:flutuar 0.3s infinite alternate; pointer-events:none;";
+            emoji.style.left = ABELHA_X + "px";
+            emoji.style.top = abelhaY + "px";
+            abelhaImg.style.display = "none";
+            abelhaImg.parentNode.appendChild(emoji);
             abelhaElement = emoji;
             window.abelhaElement = emoji;
         };
-        if (abelha.complete) {
-            abelhaElement = abelha;
-            window.abelhaElement = abelha;
+        if (abelhaImg.complete) {
+            abelhaElement = abelhaImg;
+            window.abelhaElement = abelhaImg;
         } else {
-            abelha.onload = () => {
-                abelhaElement = abelha;
-                window.abelhaElement = abelha;
+            abelhaImg.onload = () => {
+                abelhaElement = abelhaImg;
+                window.abelhaElement = abelhaImg;
             };
         }
-        // Posiciona a abelha horizontalmente
-        abelha.style.left = (window.innerWidth * ABELHA_X_PERCENT) + 'px';
-        abelha.style.top = abelhaY + 'px';
+        // Posiciona horizontalmente
+        abelhaImg.style.left = ABELHA_X + "px";
+        abelhaImg.style.top = abelhaY + "px";
     }
 
     // Remove fundo branco das personagens
-    document.querySelectorAll('.adelita, .adelita-final').forEach(el => el.style.mixBlendMode = 'multiply');
+    document.querySelectorAll(".adelita, .adelita-final").forEach(el => el.style.mixBlendMode = "multiply");
 
-    // --- Transição tela inicial -> introdução ---
+    // --- TELA INICIAL -> INTRODUÇÃO ---
     const telaInicial = document.getElementById("telaInicial");
     const introducao = document.getElementById("introducao");
     const btnComecar = document.getElementById("btnComecar");
@@ -71,17 +71,19 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // --- Diálogos (12 falas resumidas, mas funcionais) ---
-    let nomeJogador = "", personagemEscolhido = "", falaAtual = 0;
+    // --- DIÁLOGOS (resumidos mas funcionais) ---
+    let nomeJogador = "",
+        personagemEscolhido = "",
+        falaAtual = 0;
     const falas = [
         "Olá! Eu sou a Adelita e faço parte dos AgroHeróis!\n\nQual é o seu nome?",
         "Que nome lindo, [NOME]!\n\nHoje você vai participar de uma missão muito importante.\n\nEscolha seu personagem.",
         "UAL!!!\n\nO tema da nossa aventura é:\n\nAgro Forte, Futuro Sustentável:\nEquilíbrio entre Produção e Meio Ambiente.",
-        "Para produzir alimentos e cuidar da natureza ao mesmo tempo, precisamos da ajuda de muitos seres vivos.\n\nUm dos mais importantes é a abelha.",
-        "As abelhas realizam a polinização, um processo que ajuda as plantas a produzir flores, frutos e sementes.",
-        "Graças à polinização, podemos ter alimentos como: Maçã, Morango, Melancia, Pepino, Café.",
-        "Sem as abelhas, a produção de alimentos seria muito menor. Sua missão: ajudar a abelha a coletar flores.",
-        "Como jogar: ↑ Seta para cima = subir, ↓ Seta para baixo = descer",
+        "Para produzir alimentos e cuidar da natureza, precisamos da ajuda de muitos seres vivos.\n\nUm dos mais importantes é a abelha.",
+        "As abelhas realizam a polinização, ajudando as plantas a produzir flores, frutos e sementes.",
+        "Graças à polinização, temos maçã, morango, melancia, pepino, café...",
+        "Sem abelhas, a produção de alimentos seria muito menor.\n\nSua missão: ajudar a abelha a coletar flores.",
+        "Como jogar:\n⬆️ Seta para cima = subir\n⬇️ Seta para baixo = descer",
         "Objetivo: coletar 10 flores. Cada flor aumenta sua pontuação.",
         "Cuidado! Não toque no fogo nem na fumaça, senão perderá energia.",
         "Ao coletar 10 flores, você mostrará como a polinização é essencial.",
@@ -117,7 +119,8 @@ document.addEventListener("DOMContentLoaded", function() {
             nomeJogador = nomeInput.value.trim();
             if (!nomeJogador) return alert("Digite seu nome.");
         }
-        if (falaAtual === 1 && !personagemEscolhido) return alert("Escolha um personagem.");
+        if (falaAtual === 1 && !personagemEscolhido)
+            return alert("Escolha um personagem.");
         falaAtual++;
         if (falaAtual < falas.length) mostrarFala();
         else {
@@ -163,7 +166,7 @@ document.addEventListener("DOMContentLoaded", function() {
         if (!jogoRodando) return;
         const obj = document.createElement("img");
         const rand = Math.floor(Math.random() * 5);
-        if (rand < 2) { // flor
+        if (rand < 2) {
             const tiposFlor = ["flor.png", "milho.png", "soja.png"];
             obj.src = tiposFlor[Math.floor(Math.random() * 3)];
             obj.dataset.tipo = "flor";
@@ -186,14 +189,20 @@ document.addEventListener("DOMContentLoaded", function() {
         return !(r1.top > r2.bottom || r1.bottom < r2.top || r1.left > r2.right || r1.right < r2.left);
     }
 
-    // Movimento da abelha (evento global, mas só ativo durante o jogo)
+    // ========== MOVIMENTO DA ABELHA ==========
+    // Evento de teclado com log para depuração
     document.addEventListener("keydown", function(e) {
-        if (!jogoRodando) return;
+        if (!jogoRodando) {
+            console.log("Jogo não está rodando, tecla ignorada.");
+            return;
+        }
         if (e.key === "ArrowUp") {
+            console.log("⬆️ Seta para cima pressionada");
             abelhaY = Math.max(20, abelhaY - 30);
             if (abelhaElement) abelhaElement.style.top = abelhaY + "px";
             e.preventDefault();
         } else if (e.key === "ArrowDown") {
+            console.log("⬇️ Seta para baixo pressionada");
             abelhaY = Math.min(window.innerHeight - 80, abelhaY + 30);
             if (abelhaElement) abelhaElement.style.top = abelhaY + "px";
             e.preventDefault();
@@ -248,17 +257,18 @@ document.addEventListener("DOMContentLoaded", function() {
         velocidadeAtual = 2.8;
         acelerou = false;
         vitoria = false;
+        // Reinicia a posição Y e garante a posição X
         abelhaY = window.innerHeight / 2 - 50;
         if (abelhaElement) {
             abelhaElement.style.top = abelhaY + "px";
-            // Garante a posição horizontal (caso tenha mudado)
-            abelhaElement.style.left = (window.innerWidth * ABELHA_X_PERCENT) + "px";
+            abelhaElement.style.left = ABELHA_X + "px";
         }
         atualizarHUD();
         if (intervaloObjetos) clearInterval(intervaloObjetos);
         intervaloObjetos = setInterval(criarObjeto, 2000);
         if (animacaoLoop) cancelAnimationFrame(animacaoLoop);
         animacaoLoop = requestAnimationFrame(loopJogo);
+        console.log("Abelha posicionada em X:", ABELHA_X, "Y:", abelhaY);
     }
 
     function vencerFaseAbelha() {
@@ -327,7 +337,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // ==================== PLANTIO (todas as sementes clicáveis) ====================
+    // ==================== PLANTIO (todas as sementes funcionam) ====================
     const plantioTela = document.getElementById("plantioTela");
     const regador = document.getElementById("regador");
     const setaRegador = document.getElementById("setaRegador");
@@ -434,6 +444,4 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     console.log("✅ Jogo pronto: abelha em 35%, movimentação restaurada, todas as sementes funcionam.");
-});
-    console.log("✅ Jogo pronto: abelha em 35%, todas as sementes funcionam.");
 });
