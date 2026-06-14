@@ -379,7 +379,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // =============================================
-    // PLANTIO – SEMENTES CORRIGIDAS (MILHO, TOMATE, SOJA)
+    // PLANTIO – CORREÇÃO RADICAL (FALLBACK PARA IMAGENS FALTANTES)
     // =============================================
     const transicaoPlantio = document.getElementById("transicaoPlantio");
     const textoPlantioDiv = document.getElementById("textoPlantio");
@@ -429,81 +429,83 @@ document.addEventListener("DOMContentLoaded", function() {
         iniciarPlantioFase();
     });
 
-    // Função completamente revisada para garantir clique em todas as sementes
-    function configurarSementes() {
-        const sementes = document.querySelectorAll(".semente");
-        console.log("🔧 Configurando sementes. Total:", sementes.length);
-        
-        // Remove todos os listeners antigos e adiciona novos
-        sementes.forEach(semente => {
-            // Clona e substitui para remover qualquer listener residual
-            const novoSemente = semente.cloneNode(true);
-            semente.parentNode.replaceChild(novoSemente, semente);
-            novoSemente.style.display = "inline-block";
-            novoSemente.style.cursor = "pointer";
-            
-            const handler = function(event) {
-                event.stopPropagation();
-                if (sementeEscolhida !== "") {
-                    console.log("Semente já escolhida:", sementeEscolhida);
-                    return;
-                }
-                const tipo = this.dataset.semente;
-                if (!tipo) {
-                    console.error("data-semente não encontrado", this);
-                    return;
-                }
-                sementeEscolhida = tipo;
-                console.log("🌱 Semente escolhida:", sementeEscolhida);
-                
-                // Esconde todas as sementes
-                document.querySelectorAll(".semente").forEach(s => s.style.display = "none");
-                // Mostra a semente escolhida (opcional)
-                this.style.display = "block";
-                
-                alert(`🌱 Você escolheu ${sementeEscolhida}! Agora regue a planta.`);
-                
-                // Mostra regador e seta
-                regador.style.display = "block";
-                setaRegador.style.display = "block";
-                
-                // Remove evento antigo do regador e adiciona novo
-                if (regador._regarHandler) regador.removeEventListener("click", regador._regarHandler);
-                const regarHandler = function() {
-                    console.log("💧 Regando a planta:", sementeEscolhida);
-                    regador.style.display = "none";
-                    setaRegador.style.display = "none";
-                    plantinha.style.display = "block";
-                    setTimeout(() => crescerPlanta(sementeEscolhida), 2000);
-                };
-                regador.addEventListener("click", regarHandler);
-                regador._regarHandler = regarHandler;
+    // Função que cria as sementes com fallback de texto caso a imagem não exista
+    function criarSementesComFallback() {
+        const container = document.getElementById("sementes");
+        if (!container) return;
+        container.innerHTML = ""; // limpa
+        const sementesData = [
+            { tipo: "milho", imagem: "sementemilho.png", label: "🌽 MILHO" },
+            { tipo: "tomate", imagem: "sementetomate.png", label: "🍅 TOMATE" },
+            { tipo: "soja", imagem: "sementesoja.png", label: "🌱 SOJA" }
+        ];
+        sementesData.forEach(s => {
+            const img = document.createElement("img");
+            img.src = s.imagem;
+            img.className = "semente";
+            img.dataset.semente = s.tipo;
+            img.alt = s.label;
+            img.style.cursor = "pointer";
+            img.style.width = "130px";
+            img.style.display = "inline-block";
+            img.style.margin = "10px";
+            // Se a imagem falhar, substitui por um botão de texto
+            img.onerror = function() {
+                const fallback = document.createElement("div");
+                fallback.textContent = s.label;
+                fallback.className = "semente-fallback";
+                fallback.setAttribute("data-semente", s.tipo);
+                fallback.style.cssText = "display:inline-block; width:130px; padding:20px; background:#2f9e44; color:white; border-radius:20px; text-align:center; font-weight:bold; cursor:pointer; margin:10px; font-size:20px;";
+                fallback.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    if (sementeEscolhida !== "") return;
+                    sementeEscolhida = s.tipo;
+                    processarEscolhaSemente(s.tipo);
+                });
+                img.parentNode.replaceChild(fallback, img);
             };
-            
-            novoSemente.addEventListener("click", handler);
-            novoSemente._handler = handler;
+            // Evento de clique na imagem (se carregar)
+            img.addEventListener("click", (e) => {
+                e.stopPropagation();
+                if (sementeEscolhida !== "") return;
+                sementeEscolhida = img.dataset.semente;
+                processarEscolhaSemente(sementeEscolhida);
+            });
+            container.appendChild(img);
         });
-        
-        // Atualiza a seleção para os novos elementos
-        window.sementesAtuais = document.querySelectorAll(".semente");
+    }
+
+    function processarEscolhaSemente(tipo) {
+        console.log("Semente escolhida:", tipo);
+        // Esconde todas as sementes (tanto imagens quanto fallbacks)
+        document.querySelectorAll("#sementes .semente, #sementes .semente-fallback").forEach(el => el.style.display = "none");
+        alert(`🌱 Você escolheu ${tipo}! Agora regue a planta.`);
+        regador.style.display = "block";
+        setaRegador.style.display = "block";
+        // Remove evento anterior do regador e adiciona novo
+        if (regador._regarHandler) regador.removeEventListener("click", regador._regarHandler);
+        const regarHandler = function() {
+            regador.style.display = "none";
+            setaRegador.style.display = "none";
+            plantinha.style.display = "block";
+            setTimeout(() => crescerPlanta(tipo), 2000);
+        };
+        regador.addEventListener("click", regarHandler);
+        regador._regarHandler = regarHandler;
     }
 
     function iniciarPlantioFase() {
         plantioTela.classList.add("ativa");
         console.log("🌱 Iniciando fase plantio");
-        
-        // Resetar estado
+        // Reset
         regador.style.display = "none";
         plantinha.style.display = "none";
         setaRegador.style.display = "none";
         sementeEscolhida = "";
-        
-        // Remove planta final se existir
         const plantaExistente = document.getElementById("plantaFinal");
         if (plantaExistente) plantaExistente.remove();
-        
-        // Configura sementes do zero
-        configurarSementes();
+        // Recria as sementes com fallback
+        criarSementesComFallback();
     }
 
     function crescerPlanta(tipo) {
@@ -563,5 +565,5 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    console.log("✅ Jogo carregado – abelha a 40%, todas as sementes funcionando.");
+    console.log("✅ Jogo carregado – abelha a 40%, todas as sementes funcionando (com fallback de texto).");
 });
