@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", function() {
             emojiBee.id = 'abelha-emoji';
             emojiBee.textContent = '🐝';
             emojiBee.style.cssText = 'position:absolute; font-size:80px; width:auto; height:auto; z-index:15; animation:flutuar 0.3s infinite alternate; pointer-events:none;';
-            emojiBee.style.left = abelhaImg.style.left || (window.innerWidth * 0.3) + 'px';
+            emojiBee.style.left = abelhaImg.style.left || (window.innerWidth * 0.4) + 'px';
             emojiBee.style.top = abelhaImg.style.top || (window.innerHeight / 2 - 50) + 'px';
             abelhaImg.style.display = 'none';
             abelhaImg.parentNode.appendChild(emojiBee);
@@ -91,7 +91,7 @@ document.addEventListener("DOMContentLoaded", function() {
         "Sem as abelhas e outros polinizadores, a produção de muitos alimentos seria muito menor.\n\nPor isso, sua missão será ajudar uma abelha a coletar flores.",
         "Como jogar:\n\n⬆️ Seta para cima = subir\n⬇️ Seta para baixo = descer",
         "Seu objetivo é:\n\nColetar flores pelo caminho.\nCada flor ajuda na polinização e aumenta sua pontuação.",
-        "Mas atenção!\n\n🚫 Não toque no fogo.\n🚫 Não toque na fumaça.\nSe encostar, perderá energia.",
+        "Mas atenção!\n\n🚫 Não chegue perto do fogo.\n🚫 Nem da fumaça.\nSe encostar, perderá energia.",
         "Quando você coletar 10 flores, ajudará a natureza e mostrará como a polinização é essencial para um Agro Forte e um Futuro Sustentável.",
         "Clique para começar sua missão."
     ];
@@ -185,7 +185,7 @@ document.addEventListener("DOMContentLoaded", function() {
         velocidadeAtual = 2.8;
         posYAbelha = window.innerHeight / 2 - 50;
         // Abelha mais à frente: 30% da largura
-        const leftPos = (window.innerWidth * 0.3) + "px";
+        const leftPos = (window.innerWidth * 0.4) + "px";
         setAbelhaLeft(leftPos);
         setAbelhaTop(posYAbelha);
         atualizarHUD();
@@ -207,7 +207,7 @@ document.addEventListener("DOMContentLoaded", function() {
             const tiposFlor = ["flor.png", "milho.png", "soja.png"];
             objeto.src = tiposFlor[Math.floor(Math.random() * 3)];
             objeto.dataset.tipo = "flor";
-        } else if (rand === 2) {
+        } else if (rand === 1) {
             objeto.src = "fogo.png";
             objeto.dataset.tipo = "fogo";
         } else {
@@ -516,7 +516,7 @@ document.addEventListener("DOMContentLoaded", function() {
         const telaFinal = document.getElementById("telaFinal");
         const mensagemFinal = document.getElementById("mensagemFinal");
         telaFinal.classList.add("ativa");
-        mensagemFinal.innerHTML = `Parabéns, <strong>${nomeJogador}</strong>!<br><br>Você ajudou as abelhas, fez compostagem, plantou uma semente e cuidou da sua planta até ela crescer.<br><br>Muito obrigada pela sua ajuda!<br><br>Agora você é um verdadeiro <strong>AgroHerói do Futuro Sustentável</strong>.<br><br>Agro Forte, Futuro Sustentável: equilíbrio entre produção e meio ambiente.<br><br>Desenvolvido pelo aluno Matheus – 2º D Noturno<br>Colégio Estadual Antonio Tortato<br>Professora Patrícia Ferro`;
+        mensagemFinal.innerHTML = `Parabéns, <strong>${nomeJogador}</strong>!<br><br>Você ajudou as abelhas, fez compostagem, plantou uma semente e cuidou da sua planta até ela crescer.<br><br>Muito obrigada pela sua ajuda!<br><br>Agora você é um verdadeiro <strong>AgroHerói do Futuro Sustentável</strong>.<br><br>Agro Forte, Futuro Sustentável: equilíbrio entre produção e meio ambiente.<br><br>Obrigado por participar desta missão`;
     }
 
     // =============================================
