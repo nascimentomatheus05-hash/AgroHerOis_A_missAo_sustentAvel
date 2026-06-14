@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", function() {
             emojiBee.id = 'abelha-emoji';
             emojiBee.textContent = '🐝';
             emojiBee.style.cssText = 'position:absolute; font-size:80px; width:auto; height:auto; z-index:15; animation:flutuar 0.3s infinite alternate; pointer-events:none;';
-            emojiBee.style.left = (window.innerWidth * 0.4) + 'px';
+            emojiBee.style.left = (window.innerWidth * 0.3) + 'px';  // 30%
             emojiBee.style.top = (window.innerHeight / 2 - 50) + 'px';
             abelhaImg.style.display = 'none';
             abelhaImg.parentNode.appendChild(emojiBee);
@@ -149,7 +149,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     // =============================================
-    // FASE ABELHA – POSIÇÃO FIXA EM 40% DA LARGURA
+    // FASE ABELHA – POSIÇÃO FIXA EM 30% DA LARGURA
     // =============================================
     let jogoRodando = false;
     let floresColetadas = 0;
@@ -177,9 +177,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
     function atualizarPosicaoAbelha() {
         if (!abelhaElement) return;
-        const novaPosX = window.innerWidth * 0.4;
+        const novaPosX = window.innerWidth * 0.3; // 30%
         setAbelhaLeft(novaPosX + "px");
-        // Se a abelha estiver muito perto da borda direita, ajusta
         if (novaPosX + 100 > window.innerWidth) {
             setAbelhaLeft((window.innerWidth - 110) + "px");
         }
@@ -188,7 +187,6 @@ document.addEventListener("DOMContentLoaded", function() {
     window.addEventListener("resize", function() {
         if (faseAbelha.classList.contains("ativa") && jogoRodando) {
             atualizarPosicaoAbelha();
-            // Reajusta a altura também
             posYAbelha = Math.min(window.innerHeight - 80, Math.max(20, posYAbelha));
             setAbelhaTop(posYAbelha);
         }
@@ -203,8 +201,7 @@ document.addEventListener("DOMContentLoaded", function() {
         vitoria = false;
         velocidadeAtual = 2.8;
         posYAbelha = window.innerHeight / 2 - 50;
-        // Posição horizontal: 40% da largura
-        const leftPos = (window.innerWidth * 0.4) + "px";
+        const leftPos = (window.innerWidth * 0.3) + "px"; // 30%
         setAbelhaLeft(leftPos);
         setAbelhaTop(posYAbelha);
         atualizarHUD();
@@ -412,7 +409,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // =============================================
-    // PLANTIO – CADA SEMENTE COM SEU PRÓPRIO EVENTO
+    // PLANTIO – CADA SEMENTE COM onclick DIRETO
     // =============================================
     const transicaoPlantio = document.getElementById("transicaoPlantio");
     const textoPlantioDiv = document.getElementById("textoPlantio");
@@ -462,19 +459,18 @@ document.addEventListener("DOMContentLoaded", function() {
         iniciarPlantioFase();
     });
 
-    // Função que configura os eventos de clique para cada semente
+    // Função que configura os eventos de clique para cada semente (versão com onclick)
     function configurarSementes() {
         const sementes = document.querySelectorAll(".semente");
+        console.log("Configurando sementes, encontradas:", sementes.length);
         sementes.forEach(semente => {
-            // Remove event listeners antigos (evita duplicação)
-            const novaSemente = semente.cloneNode(true);
-            semente.parentNode.replaceChild(novaSemente, semente);
-            novaSemente.addEventListener("click", function(e) {
-                e.stopPropagation();
+            // Remove qualquer listener anterior (se houver)
+            semente.onclick = null;
+            semente.onclick = function() {
                 if (sementeEscolhida !== "") return;
-                const tipo = this.getAttribute("data-semente");
+                const tipo = this.dataset.semente;
                 if (!tipo) {
-                    console.error("Semente sem data-semente:", this);
+                    console.error("Erro: data-semente não encontrada", this);
                     return;
                 }
                 sementeEscolhida = tipo;
@@ -485,16 +481,17 @@ document.addEventListener("DOMContentLoaded", function() {
                 alert(`🌱 Você escolheu ${sementeEscolhida}! Agora regue a planta.`);
                 regador.style.display = "block";
                 setaRegador.style.display = "block";
-                const handleRegar = function() {
-                    if (!sementeEscolhida) return;
+                // Remove listener anterior do regador
+                regador.onclick = null;
+                regador.onclick = function() {
                     regador.style.display = "none";
                     setaRegador.style.display = "none";
                     plantinha.style.display = "block";
-                    setTimeout(() => crescerPlanta(sementeEscolhida), 2000);
-                    regador.removeEventListener("click", handleRegar);
+                    setTimeout(() => {
+                        crescerPlanta(sementeEscolhida);
+                    }, 2000);
                 };
-                regador.addEventListener("click", handleRegar, { once: true });
-            });
+            };
         });
     }
 
@@ -510,6 +507,11 @@ document.addEventListener("DOMContentLoaded", function() {
         // Garantir que todas as sementes estejam visíveis
         document.querySelectorAll(".semente").forEach(s => s.style.display = "inline-block");
         configurarSementes();
+        
+        // Teste adicional para garantir clique (depuração)
+        document.querySelectorAll(".semente").forEach(s => {
+            console.log("Semente pronta:", s.dataset.semente);
+        });
     }
 
     function crescerPlanta(tipo) {
@@ -570,5 +572,5 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    console.log("✅ Jogo AgroHeróis carregado – abelha a 40%, sementes individuais funcionam.");
+    console.log("✅ Jogo AgroHeróis carregado – abelha a 30%, sementes com onclick direto.");
 });
