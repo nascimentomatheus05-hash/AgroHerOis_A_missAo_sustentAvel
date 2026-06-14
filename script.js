@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function() {
     // =============================================
-    // CONTROLE DE MÚSICA (musica.mp3)
+    // CONTROLE DE MÚSICA
     // =============================================
     const botaoMusica = document.getElementById("btnMusica");
     const audio = document.getElementById("musicaFundo");
@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // =============================================
-    // FALLBACK DA ABELHA (caso a.png não exista)
+    // FALLBACK DA ABELHA
     // =============================================
     const abelhaImg = document.getElementById('abelha');
     let abelhaElement = abelhaImg;
@@ -39,7 +39,8 @@ document.addEventListener("DOMContentLoaded", function() {
             emojiBee.id = 'abelha-emoji';
             emojiBee.textContent = '🐝';
             emojiBee.style.cssText = 'position:absolute; font-size:80px; width:auto; height:auto; z-index:15; animation:flutuar 0.3s infinite alternate; pointer-events:none;';
-            emojiBee.style.left = (window.innerWidth * 0.3) + 'px';
+            emojiBee.style.left = '50%';
+            emojiBee.style.transform = 'translateX(-50%)';
             emojiBee.style.top = (window.innerHeight / 2 - 50) + 'px';
             abelhaImg.style.display = 'none';
             abelhaImg.parentNode.appendChild(emojiBee);
@@ -56,13 +57,13 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
-    // Remove fundo branco das personagens
+    // Remove fundo branco
     document.querySelectorAll('.adelita, .adelita-final').forEach(el => {
         if (el) el.style.mixBlendMode = 'multiply';
     });
 
     // =============================================
-    // TRANSIÇÃO DA TELA INICIAL
+    // TELA INICIAL
     // =============================================
     const telaInicial = document.getElementById("telaInicial");
     const introducao = document.getElementById("introducao");
@@ -77,7 +78,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // =============================================
-    // DIÁLOGOS DA INTRODUÇÃO
+    // DIÁLOGOS INTRODUÇÃO
     // =============================================
     let nomeJogador = "", personagemEscolhido = "", falaAtual = 0;
 
@@ -149,7 +150,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     // =============================================
-    // FASE ABELHA – POSIÇÃO FIXA EM 30% DA LARGURA
+    // FASE ABELHA – CENTRALIZADA
     // =============================================
     let jogoRodando = false;
     let floresColetadas = 0;
@@ -171,23 +172,28 @@ document.addEventListener("DOMContentLoaded", function() {
     function setAbelhaTop(top) {
         if (abelhaElement) abelhaElement.style.top = top + "px";
     }
-    function setAbelhaLeft(left) {
-        if (abelhaElement) abelhaElement.style.left = left + "px";
+    
+    // Centraliza a abelha horizontalmente
+    function centralizarAbelha() {
+        if (!abelhaElement) return;
+        const larguraAbelha = abelhaElement.offsetWidth;
+        const centroX = (window.innerWidth - larguraAbelha) / 2;
+        abelhaElement.style.left = centroX + "px";
+        // Se for emoji, ajustar transform
+        if (abelhaElement.id === 'abelha-emoji') {
+            abelhaElement.style.left = '50%';
+            abelhaElement.style.transform = 'translateX(-50%)';
+        }
     }
 
     function atualizarPosicaoAbelha() {
         if (!abelhaElement) return;
-        // ALTERADO: 30% em vez de 40%
-        const novaPosX = window.innerWidth * 0.3;
-        setAbelhaLeft(novaPosX + "px");
-        if (novaPosX + 100 > window.innerWidth) {
-            setAbelhaLeft((window.innerWidth - 110) + "px");
-        }
+        centralizarAbelha();
     }
 
     window.addEventListener("resize", function() {
         if (faseAbelha.classList.contains("ativa") && jogoRodando) {
-            atualizarPosicaoAbelha();
+            centralizarAbelha();
             posYAbelha = Math.min(window.innerHeight - 80, Math.max(20, posYAbelha));
             setAbelhaTop(posYAbelha);
         }
@@ -202,8 +208,7 @@ document.addEventListener("DOMContentLoaded", function() {
         vitoria = false;
         velocidadeAtual = 2.8;
         posYAbelha = window.innerHeight / 2 - 50;
-        const leftPos = (window.innerWidth * 0.3) + "px";
-        setAbelhaLeft(leftPos);
+        centralizarAbelha();
         setAbelhaTop(posYAbelha);
         atualizarHUD();
         if (intervaloObjetos) clearInterval(intervaloObjetos);
@@ -321,7 +326,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // =============================================
-    // COMPOSTAGEM (mesmo código, sem alterações)
+    // COMPOSTAGEM
     // =============================================
     const transicaoCompostagem = document.getElementById("transicaoCompostagem");
     const textoCompostagemDiv = document.getElementById("textoCompostagem");
@@ -410,7 +415,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // =============================================
-    // PLANTIO – SEMENTES CLICÁVEIS
+    // PLANTIO – SEMENTES FUNCIONANDO
     // =============================================
     const transicaoPlantio = document.getElementById("transicaoPlantio");
     const textoPlantioDiv = document.getElementById("textoPlantio");
@@ -463,8 +468,11 @@ document.addEventListener("DOMContentLoaded", function() {
     function configurarSementes() {
         const sementes = document.querySelectorAll(".semente");
         sementes.forEach(semente => {
-            semente.onclick = function() {
-                if (sementeEscolhida !== "") return;
+            // Remove qualquer evento anterior para evitar duplicação
+            semente.removeEventListener("click", semente.clickHandler);
+            // Define o novo handler
+            const handler = function() {
+                if (sementeEscolhida !== "") return; // já escolheu
                 const tipo = this.dataset.semente;
                 if (!tipo) {
                     console.error("Erro: data-semente não encontrada");
@@ -474,12 +482,15 @@ document.addEventListener("DOMContentLoaded", function() {
                 console.log("Semente escolhida:", sementeEscolhida);
                 // Esconde todas as sementes
                 document.querySelectorAll(".semente").forEach(s => s.style.display = "none");
+                // Mostra a escolhida (opcional)
                 this.style.display = "block";
                 alert(`🌱 Você escolheu ${sementeEscolhida}! Agora regue a planta.`);
+                // Mostra regador e seta
                 regador.style.display = "block";
                 setaRegador.style.display = "block";
-                // Evento de regar
-                regador.onclick = function() {
+                
+                // Define evento de regar (substitui o anterior)
+                const regarHandler = function() {
                     regador.style.display = "none";
                     setaRegador.style.display = "none";
                     plantinha.style.display = "block";
@@ -487,7 +498,13 @@ document.addEventListener("DOMContentLoaded", function() {
                         crescerPlanta(sementeEscolhida);
                     }, 2000);
                 };
+                // Remove evento antigo e adiciona novo
+                regador.removeEventListener("click", regador.clickHandler);
+                regador.addEventListener("click", regarHandler);
+                regador.clickHandler = regarHandler;
             };
+            semente.addEventListener("click", handler);
+            semente.clickHandler = handler;
         });
     }
 
@@ -539,7 +556,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // =============================================
-    // CERTIFICADO E PDF
+    // CERTIFICADO
     // =============================================
     const btnCertificado = document.getElementById("btnCertificado");
     const certificadoTela = document.getElementById("certificadoTela");
@@ -563,5 +580,5 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    console.log("✅ Jogo AgroHeróis carregado – abelha a 30%, sementes com onclick direto.");
+    console.log("✅ Jogo AgroHeróis carregado – abelha centralizada, sementes 100% funcionais.");
 });
