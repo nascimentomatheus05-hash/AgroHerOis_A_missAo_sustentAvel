@@ -32,16 +32,13 @@
     </div>
 </section>
 
-<!-- BOTÃO DE MÚSICA (FLUTUANTE) -->
+<!-- BOTÃO DE MÚSICA -->
 <button id="btnMusica" class="botao-musica">🎵</button>
-
-<!-- ÁUDIO (loop, começa pausado) -->
 <audio id="musicaFundo" loop preload="auto">
     <source src="musica.mp3" type="audio/mpeg">
-    Seu navegador não suporta áudio.
 </audio>
 
-<!-- INTRODUÇÃO (DIÁLOGOS) -->
+<!-- INTRODUÇÃO -->
 <section id="introducao" class="tela">
     <img src="1.png" class="fundo" alt="Fundo">
     <div class="logos">
@@ -131,12 +128,19 @@
     </div>
 </section>
 
-<!-- TELA FINAL -->
+<!-- TELA FINAL (com principal3.png à esquerda e galeria.png à direita) -->
 <section id="telaFinal" class="tela">
     <img src="1.png" class="fundo">
     <div class="logos"><img src="logo.png"><img src="logo1.png"><img src="logo2.png"></div>
-    <img src="principal3.png" class="adelita">
-    <div class="caixaDialogo"><h2>Parabéns!</h2><p id="mensagemFinal"></p><button id="btnCertificado" class="botao">VER CERTIFICADO</button></div>
+    <div class="final-personagens">
+        <img src="principal3.png" class="adelita-final">
+        <img src="galeria.png" class="galeria-final">
+    </div>
+    <div class="caixaDialogo">
+        <h2>Parabéns!</h2>
+        <p id="mensagemFinal"></p>
+        <button id="btnCertificado" class="botao">VER CERTIFICADO</button>
+    </div>
 </section>
 
 <!-- CERTIFICADO -->
