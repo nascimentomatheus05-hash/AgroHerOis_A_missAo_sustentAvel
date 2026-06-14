@@ -297,7 +297,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // =============================================
-    // COMPOSTAGEM
+    // COMPOSTAGEM (mantido igual)
     // =============================================
     const transicaoCompostagem = document.getElementById("transicaoCompostagem");
     const textoCompostagemDiv = document.getElementById("textoCompostagem");
@@ -379,7 +379,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // =============================================
-    // PLANTIO – VERSÃO COM BOTÕES (100% FUNCIONAL)
+    // PLANTIO – VERSÃO SIMPLIFICADA COM BOTÕES E SETAS
     // =============================================
     const transicaoPlantio = document.getElementById("transicaoPlantio");
     const textoPlantioDiv = document.getElementById("textoPlantio");
@@ -429,7 +429,7 @@ document.addEventListener("DOMContentLoaded", function() {
         iniciarPlantioFase();
     });
 
-    // Cria botões de semente (sem depender de imagens)
+    // Função para criar botões com setas indicando clique
     function criarBotoesSementes() {
         const container = document.getElementById("sementes");
         if (!container) return;
@@ -442,13 +442,15 @@ document.addEventListener("DOMContentLoaded", function() {
         ];
         
         sementes.forEach(s => {
+            // Cria um wrapper para o botão e a seta
+            const wrapper = document.createElement("div");
+            wrapper.style.cssText = "display: inline-flex; flex-direction: column; align-items: center; margin: 15px; position: relative;";
+            
             const btn = document.createElement("button");
             btn.textContent = s.label;
             btn.dataset.semente = s.nome;
             btn.dataset.fruto = s.fruto;
             btn.style.cssText = `
-                display: inline-block;
-                margin: 15px;
                 padding: 15px 25px;
                 font-size: 24px;
                 font-weight: bold;
@@ -461,18 +463,49 @@ document.addEventListener("DOMContentLoaded", function() {
                 box-shadow: 0 4px 8px rgba(0,0,0,0.2);
                 width: 180px;
             `;
+            
+            // Seta animada indicando clique
+            const seta = document.createElement("div");
+            seta.textContent = "👇 CLIQUE AQUI 👇";
+            seta.style.cssText = `
+                margin-top: 8px;
+                font-size: 16px;
+                font-weight: bold;
+                color: #ff6600;
+                background-color: rgba(255,255,255,0.8);
+                padding: 4px 12px;
+                border-radius: 20px;
+                animation: piscarSeta 1s infinite;
+            `;
+            // Adiciona animação no CSS global se não existir
+            if (!document.querySelector("#style-setas")) {
+                const style = document.createElement("style");
+                style.id = "style-setas";
+                style.textContent = `
+                    @keyframes piscarSeta {
+                        0% { opacity: 1; transform: translateY(0); }
+                        50% { opacity: 0.5; transform: translateY(5px); }
+                        100% { opacity: 1; transform: translateY(0); }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+            
             btn.addEventListener("mouseenter", () => btn.style.transform = "scale(1.05)");
             btn.addEventListener("mouseleave", () => btn.style.transform = "scale(1)");
             btn.addEventListener("click", (e) => {
                 e.stopPropagation();
-                if (sementeEscolhida !== "") return;
+                if (sementeEscolhida !== "") {
+                    alert(`Você já escolheu a semente ${sementeEscolhida}. Recarregue a fase para escolher outra.`);
+                    return;
+                }
                 sementeEscolhida = s.nome;
-                // Esconde todos os botões
-                document.querySelectorAll("#sementes button").forEach(b => b.style.display = "none");
+                // Esconde todos os botões e setas
+                document.querySelectorAll("#sementes button, #sementes div > div").forEach(el => el.style.display = "none");
                 alert(`🌱 Você escolheu ${s.label}! Agora regue a planta.`);
                 regador.style.display = "block";
                 setaRegador.style.display = "block";
-                // Remove evento anterior do regador
+                // Remove evento anterior do regador e adiciona novo
                 if (regador._regarHandler) regador.removeEventListener("click", regador._regarHandler);
                 const regarHandler = function() {
                     regador.style.display = "none";
@@ -483,13 +516,15 @@ document.addEventListener("DOMContentLoaded", function() {
                 regador.addEventListener("click", regarHandler);
                 regador._regarHandler = regarHandler;
             });
-            container.appendChild(btn);
+            wrapper.appendChild(btn);
+            wrapper.appendChild(seta);
+            container.appendChild(wrapper);
         });
     }
 
     function iniciarPlantioFase() {
         plantioTela.classList.add("ativa");
-        console.log("🌱 Iniciando fase plantio com botões");
+        console.log("🌱 Fase plantio iniciada – botões com setas");
         // Reset
         regador.style.display = "none";
         plantinha.style.display = "none";
@@ -554,5 +589,5 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    console.log("✅ Jogo carregado – abelha a 40%, plantio com botões funcionando 100%.");
+    console.log("✅ Jogo carregado – abelha a 40%, plantio com botões e setas 100% funcional.");
 });
