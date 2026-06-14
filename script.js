@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function() {
     // =============================================
-    // CONTROLE DE MÚSICA
+    // MÚSICA
     // =============================================
     const botaoMusica = document.getElementById("btnMusica");
     const audio = document.getElementById("musicaFundo");
@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // =============================================
-    // ABELHA POSICIONADA A 40% DA LARGURA
+    // ABELHA A 40% DA LARGURA
     // =============================================
     const abelhaImg = document.getElementById('abelha');
     let abelhaElement = abelhaImg;
@@ -73,7 +73,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // =============================================
-    // TELA INICIAL E INTRODUÇÃO
+    // INTRODUÇÃO (igual)
     // =============================================
     const telaInicial = document.getElementById("telaInicial");
     const introducao = document.getElementById("introducao");
@@ -97,7 +97,7 @@ document.addEventListener("DOMContentLoaded", function() {
         "Sem as abelhas e outros polinizadores, a produção de muitos alimentos seria muito menor.\n\nPor isso, sua missão será ajudar uma abelha a coletar flores.",
         "Como jogar:\n\n⬆️ Seta para cima = subir\n⬇️ Seta para baixo = descer",
         "Seu objetivo é:\n\nColetar flores pelo caminho.\nCada flor ajuda na polinização e aumenta sua pontuação.",
-        "Mas atenção!\n\n🚫 Não chegue perto do fogo.\n🚫 Nem da fumaça.\nSe encostar, perderá energia.",
+        "Mas atenção!\n\n🚫 Não chegue perto do fogo.\n🚫Não chegue perto da fumaça.\nSe chegar perto o calor e resquicio de fumaça, fará com que você perca vida você tem 3.",
         "Quando você coletar 10 flores, ajudará a natureza e mostrará como a polinização é essencial para um Agro Forte e um Futuro Sustentável.",
         "Clique para começar sua missão."
     ];
@@ -152,7 +152,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     // =============================================
-    // FASE ABELHA
+    // FASE ABELHA (completa)
     // =============================================
     let jogoRodando = false, floresColetadas = 0, vidas = 3, posYAbelha = 300;
     let intervaloObjetos, animacaoLoop, velocidadeAtual = 2.8, acelerou = false, vitoria = false;
@@ -239,7 +239,6 @@ document.addEventListener("DOMContentLoaded", function() {
             x -= velocidadeAtual;
             obj.style.left = x + "px";
             if (x + obj.offsetWidth < 0) obj.remove();
-            
             if (abelhaElement && colidiu(abelhaElement, obj)) {
                 if (obj.dataset.tipo === "flor") {
                     floresColetadas++;
@@ -297,7 +296,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // =============================================
-    // COMPOSTAGEM (mantido igual)
+    // COMPOSTAGEM (igual)
     // =============================================
     const transicaoCompostagem = document.getElementById("transicaoCompostagem");
     const textoCompostagemDiv = document.getElementById("textoCompostagem");
@@ -379,7 +378,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // =============================================
-    // PLANTIO – VERSÃO SIMPLIFICADA COM BOTÕES E SETAS
+    // PLANTIO – APENAS SOJA (SIMPLES E FUNCIONAL)
     // =============================================
     const transicaoPlantio = document.getElementById("transicaoPlantio");
     const textoPlantioDiv = document.getElementById("textoPlantio");
@@ -390,13 +389,12 @@ document.addEventListener("DOMContentLoaded", function() {
     const setaRegador = document.getElementById("setaRegador");
     const plantinha = document.getElementById("plantinha");
     const areaPlantio = document.getElementById("areaPlantio");
-    let sementeEscolhida = "";
 
     const falasPlantio = [
         "Parabéns, [NOME]! Você separou os resíduos corretamente e produziu adubo natural.",
         "Agora o solo está preparado! Lembra das abelhas? Elas ajudam as plantas a produzir frutos.",
-        "Sua próxima missão: escolha uma semente para plantar: Milho, Tomate ou Soja.",
-        "Depois regue sua plantinha. Clique em COMEÇAR."
+        "Sua missão: plante a semente de SOJA e regue para ela crescer.",
+        "Clique em COMEÇAR para iniciar o plantio."
     ];
     let falaPlantioAtual = 0;
 
@@ -429,117 +427,61 @@ document.addEventListener("DOMContentLoaded", function() {
         iniciarPlantioFase();
     });
 
-    // Função para criar botões com setas indicando clique
-    function criarBotoesSementes() {
+    function iniciarPlantioFase() {
+        plantioTela.classList.add("ativa");
+        // Mostra apenas a semente de soja
         const container = document.getElementById("sementes");
-        if (!container) return;
-        container.innerHTML = ""; // limpa
-        
-        const sementes = [
-            { nome: "milho", label: "🌽 MILHO", cor: "#f9a825", fruto: "milhocresce.png" },
-            { nome: "tomate", label: "🍅 TOMATE", cor: "#e53935", fruto: "tomatecresce.png" },
-            { nome: "soja", label: "🌱 SOJA", cor: "#43a047", fruto: "sojacrece.png" }
-        ];
-        
-        sementes.forEach(s => {
-            // Cria um wrapper para o botão e a seta
-            const wrapper = document.createElement("div");
-            wrapper.style.cssText = "display: inline-flex; flex-direction: column; align-items: center; margin: 15px; position: relative;";
-            
-            const btn = document.createElement("button");
-            btn.textContent = s.label;
-            btn.dataset.semente = s.nome;
-            btn.dataset.fruto = s.fruto;
-            btn.style.cssText = `
-                padding: 15px 25px;
-                font-size: 24px;
+        if (container) {
+            container.innerHTML = ""; // limpa
+            const btnSoja = document.createElement("button");
+            btnSoja.textContent = "🌱 SOJA";
+            btnSoja.style.cssText = `
+                padding: 20px 40px;
+                font-size: 28px;
                 font-weight: bold;
-                background-color: ${s.cor};
+                background-color: #43a047;
                 color: white;
                 border: none;
-                border-radius: 50px;
+                border-radius: 60px;
                 cursor: pointer;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
                 transition: transform 0.2s;
-                box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-                width: 180px;
+                display: block;
+                margin: 50px auto;
             `;
-            
-            // Seta animada indicando clique
-            const seta = document.createElement("div");
-            seta.textContent = "👇 CLIQUE AQUI 👇";
-            seta.style.cssText = `
-                margin-top: 8px;
-                font-size: 16px;
-                font-weight: bold;
-                color: #ff6600;
-                background-color: rgba(255,255,255,0.8);
-                padding: 4px 12px;
-                border-radius: 20px;
-                animation: piscarSeta 1s infinite;
-            `;
-            // Adiciona animação no CSS global se não existir
-            if (!document.querySelector("#style-setas")) {
-                const style = document.createElement("style");
-                style.id = "style-setas";
-                style.textContent = `
-                    @keyframes piscarSeta {
-                        0% { opacity: 1; transform: translateY(0); }
-                        50% { opacity: 0.5; transform: translateY(5px); }
-                        100% { opacity: 1; transform: translateY(0); }
-                    }
-                `;
-                document.head.appendChild(style);
-            }
-            
-            btn.addEventListener("mouseenter", () => btn.style.transform = "scale(1.05)");
-            btn.addEventListener("mouseleave", () => btn.style.transform = "scale(1)");
-            btn.addEventListener("click", (e) => {
-                e.stopPropagation();
-                if (sementeEscolhida !== "") {
-                    alert(`Você já escolheu a semente ${sementeEscolhida}. Recarregue a fase para escolher outra.`);
-                    return;
-                }
-                sementeEscolhida = s.nome;
-                // Esconde todos os botões e setas
-                document.querySelectorAll("#sementes button, #sementes div > div").forEach(el => el.style.display = "none");
-                alert(`🌱 Você escolheu ${s.label}! Agora regue a planta.`);
+            btnSoja.addEventListener("mouseenter", () => btnSoja.style.transform = "scale(1.05)");
+            btnSoja.addEventListener("mouseleave", () => btnSoja.style.transform = "scale(1)");
+            btnSoja.addEventListener("click", () => {
+                // Ao clicar no botão, mostra o regador
+                alert("🌱 Você escolheu a semente de SOJA! Agora regue a planta.");
                 regador.style.display = "block";
                 setaRegador.style.display = "block";
-                // Remove evento anterior do regador e adiciona novo
                 if (regador._regarHandler) regador.removeEventListener("click", regador._regarHandler);
                 const regarHandler = function() {
                     regador.style.display = "none";
                     setaRegador.style.display = "none";
                     plantinha.style.display = "block";
-                    setTimeout(() => crescerPlanta(s.nome, s.fruto), 2000);
+                    setTimeout(() => crescerPlanta(), 2000);
                 };
                 regador.addEventListener("click", regarHandler);
                 regador._regarHandler = regarHandler;
+                // Esconde o botão após a escolha
+                btnSoja.style.display = "none";
             });
-            wrapper.appendChild(btn);
-            wrapper.appendChild(seta);
-            container.appendChild(wrapper);
-        });
-    }
-
-    function iniciarPlantioFase() {
-        plantioTela.classList.add("ativa");
-        console.log("🌱 Fase plantio iniciada – botões com setas");
-        // Reset
+            container.appendChild(btnSoja);
+        }
+        // Reset do regador e planta
         regador.style.display = "none";
         plantinha.style.display = "none";
         setaRegador.style.display = "none";
-        sementeEscolhida = "";
         const plantaExistente = document.getElementById("plantaFinal");
         if (plantaExistente) plantaExistente.remove();
-        // Cria os botões
-        criarBotoesSementes();
     }
 
-    function crescerPlanta(tipo, frutoImg) {
+    function crescerPlanta() {
         if (plantinha.parentNode) plantinha.remove();
         const plantaFinal = document.createElement("img");
-        plantaFinal.src = frutoImg;
+        plantaFinal.src = "sojacrece.png";
         plantaFinal.onerror = function() { this.src = "sojacrece.png"; };
         plantaFinal.id = "plantaFinal";
         plantaFinal.style.cssText = "position:absolute; bottom:80px; left:50%; transform:translateX(-50%); width:100px; transition:width 0.1s linear;";
@@ -562,11 +504,11 @@ document.addEventListener("DOMContentLoaded", function() {
         const telaFinal = document.getElementById("telaFinal");
         const mensagemFinal = document.getElementById("mensagemFinal");
         telaFinal.classList.add("ativa");
-        mensagemFinal.innerHTML = `Parabéns, <strong>${nomeJogador}</strong>!<br><br>Você ajudou as abelhas, fez compostagem, plantou uma semente e cuidou da sua planta até ela crescer.<br><br>Muito obrigada pela sua ajuda!<br><br>Agora você é um verdadeiro <strong>AgroHerói do Futuro Sustentável</strong>.<br><br>Agro Forte, Futuro Sustentável: equilíbrio entre produção e meio ambiente.<br><br>Obrigado por participar desta missão`;
+        mensagemFinal.innerHTML = `Parabéns, <strong>${nomeJogador}</strong>!<br><br>Você ajudou as abelhas, fez compostagem, plantou a semente de SOJA e cuidou da sua planta até ela crescer.<br><br>Muito obrigada pela sua ajuda!<br><br>Agora você é um verdadeiro <strong>AgroHerói do Futuro Sustentável</strong>.<br><br>Agro Forte, Futuro Sustentável: equilíbrio entre produção e meio ambiente.<br><br>Obrigado por participar desta missão`;
     }
 
     // =============================================
-    // CERTIFICADO E PDF
+    // CERTIFICADO E PDF (igual)
     // =============================================
     const btnCertificado = document.getElementById("btnCertificado");
     const certificadoTela = document.getElementById("certificadoTela");
@@ -589,5 +531,5 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    console.log("✅ Jogo carregado – abelha a 40%, plantio com botões e setas 100% funcional.");
+    console.log("✅ Jogo carregado – abelha a 40%, plantio apenas com SOJA (simples e funcional).");
 });
