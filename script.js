@@ -30,16 +30,14 @@ document.addEventListener("DOMContentLoaded", function() {
     function posicionarAbelhaHorizontal() {
         if (!abelhaElement) return;
         if (abelhaElement.id === 'abelha-emoji') {
-            // Fallback emoji: centraliza no ponto 40% da largura
             abelhaElement.style.left = '40%';
             abelhaElement.style.transform = 'translateX(-40%)';
         } else {
             const largura = abelhaElement.offsetWidth;
-            // Posição = 40% da largura da tela - metade da largura da imagem
             let posX = (window.innerWidth * 0.4) - (largura / 2);
             posX = Math.max(0, Math.min(posX, window.innerWidth - largura));
             abelhaElement.style.left = posX + 'px';
-            abelhaElement.style.transform = 'none'; // remove qualquer transform
+            abelhaElement.style.transform = 'none';
         }
     }
 
@@ -47,7 +45,6 @@ document.addEventListener("DOMContentLoaded", function() {
         if (abelhaElement) abelhaElement.style.top = top + "px";
     }
 
-    // Fallback: se a imagem a.png não existir
     if (abelhaImg) {
         abelhaImg.onerror = function() {
             const emojiBee = document.createElement('div');
@@ -155,7 +152,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     // =============================================
-    // FASE ABELHA – POSIÇÃO FIXA EM 40% DA LARGURA
+    // FASE ABELHA
     // =============================================
     let jogoRodando = false, floresColetadas = 0, vidas = 3, posYAbelha = 300;
     let intervaloObjetos, animacaoLoop, velocidadeAtual = 2.8, acelerou = false, vitoria = false;
@@ -300,7 +297,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // =============================================
-    // COMPOSTAGEM (mantido igual)
+    // COMPOSTAGEM
     // =============================================
     const transicaoCompostagem = document.getElementById("transicaoCompostagem");
     const textoCompostagemDiv = document.getElementById("textoCompostagem");
@@ -382,7 +379,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // =============================================
-    // PLANTIO – SEMENTES CLICÁVEIS
+    // PLANTIO – SEMENTES CORRIGIDAS (MILHO, TOMATE, SOJA)
     // =============================================
     const transicaoPlantio = document.getElementById("transicaoPlantio");
     const textoPlantioDiv = document.getElementById("textoPlantio");
@@ -432,22 +429,48 @@ document.addEventListener("DOMContentLoaded", function() {
         iniciarPlantioFase();
     });
 
+    // Função completamente revisada para garantir clique em todas as sementes
     function configurarSementes() {
         const sementes = document.querySelectorAll(".semente");
+        console.log("🔧 Configurando sementes. Total:", sementes.length);
+        
+        // Remove todos os listeners antigos e adiciona novos
         sementes.forEach(semente => {
-            semente.removeEventListener("click", semente._handler);
-            const handler = function() {
-                if (sementeEscolhida !== "") return;
+            // Clona e substitui para remover qualquer listener residual
+            const novoSemente = semente.cloneNode(true);
+            semente.parentNode.replaceChild(novoSemente, semente);
+            novoSemente.style.display = "inline-block";
+            novoSemente.style.cursor = "pointer";
+            
+            const handler = function(event) {
+                event.stopPropagation();
+                if (sementeEscolhida !== "") {
+                    console.log("Semente já escolhida:", sementeEscolhida);
+                    return;
+                }
                 const tipo = this.dataset.semente;
-                if (!tipo) return;
+                if (!tipo) {
+                    console.error("data-semente não encontrado", this);
+                    return;
+                }
                 sementeEscolhida = tipo;
+                console.log("🌱 Semente escolhida:", sementeEscolhida);
+                
+                // Esconde todas as sementes
                 document.querySelectorAll(".semente").forEach(s => s.style.display = "none");
+                // Mostra a semente escolhida (opcional)
                 this.style.display = "block";
+                
                 alert(`🌱 Você escolheu ${sementeEscolhida}! Agora regue a planta.`);
+                
+                // Mostra regador e seta
                 regador.style.display = "block";
                 setaRegador.style.display = "block";
+                
+                // Remove evento antigo do regador e adiciona novo
                 if (regador._regarHandler) regador.removeEventListener("click", regador._regarHandler);
                 const regarHandler = function() {
+                    console.log("💧 Regando a planta:", sementeEscolhida);
                     regador.style.display = "none";
                     setaRegador.style.display = "none";
                     plantinha.style.display = "block";
@@ -456,20 +479,30 @@ document.addEventListener("DOMContentLoaded", function() {
                 regador.addEventListener("click", regarHandler);
                 regador._regarHandler = regarHandler;
             };
-            semente.addEventListener("click", handler);
-            semente._handler = handler;
+            
+            novoSemente.addEventListener("click", handler);
+            novoSemente._handler = handler;
         });
+        
+        // Atualiza a seleção para os novos elementos
+        window.sementesAtuais = document.querySelectorAll(".semente");
     }
 
     function iniciarPlantioFase() {
         plantioTela.classList.add("ativa");
+        console.log("🌱 Iniciando fase plantio");
+        
+        // Resetar estado
         regador.style.display = "none";
         plantinha.style.display = "none";
         setaRegador.style.display = "none";
         sementeEscolhida = "";
+        
+        // Remove planta final se existir
         const plantaExistente = document.getElementById("plantaFinal");
         if (plantaExistente) plantaExistente.remove();
-        document.querySelectorAll(".semente").forEach(s => s.style.display = "inline-block");
+        
+        // Configura sementes do zero
         configurarSementes();
     }
 
@@ -530,5 +563,5 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    console.log("✅ Jogo carregado – abelha posicionada a 40% da largura, sementes clicáveis.");
+    console.log("✅ Jogo carregado – abelha a 40%, todas as sementes funcionando.");
 });
