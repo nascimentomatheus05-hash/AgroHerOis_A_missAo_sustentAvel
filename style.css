@@ -1,0 +1,403 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    user-select: none;
+}
+
+body {
+    overflow: hidden;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #1a3c2c;
+}
+
+/* TELAS */
+.tela {
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+.tela.ativa {
+    display: block;
+    opacity: 1;
+}
+
+/* FUNDO PADRÃO */
+.fundo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+/* TELA INICIAL - FUNDO 3.png */
+.fundo-inicial-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #1a3c2c;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.fundo-inicial-container img {
+    max-width: 80%;
+    max-height: 80%;
+    object-fit: contain;
+}
+
+/* LOGOS INICIAIS */
+.logos-iniciais {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    right: 20px;
+    z-index: 20;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+.logos-esquerda {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.logos-direita {
+    display: flex;
+    align-items: flex-start;
+}
+.logo-animada {
+    height: 240px;
+    width: auto;
+    animation: pulsarBrilho 1.5s ease-in-out infinite;
+    filter: drop-shadow(0 0 8px gold);
+}
+@keyframes pulsarBrilho {
+    0% { transform: scale(1); filter: drop-shadow(0 0 2px gold); }
+    50% { transform: scale(1.08); filter: drop-shadow(0 0 25px #ffd700); }
+    100% { transform: scale(1); filter: drop-shadow(0 0 2px gold); }
+}
+
+/* LOGOS OUTRAS TELAS */
+.logos {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    z-index: 10;
+    display: flex;
+    gap: 20px;
+}
+.logos img {
+    height: 100px;
+    filter: drop-shadow(2px 2px 5px rgba(0,0,0,0.3));
+}
+
+/* BOTÃO FLUTUANTE DE MÚSICA */
+.botao-musica {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #2f9e44;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    font-size: 32px;
+    cursor: pointer;
+    z-index: 100;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    transition: transform 0.2s;
+}
+.botao-musica:hover {
+    transform: scale(1.1);
+}
+
+/* RODAPÉ */
+.rodape {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #2f9e44;
+    color: white;
+    text-align: center;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    z-index: 20;
+    border-top: 2px solid #1e6b2f;
+}
+.rodape p {
+    margin: 2px 0;
+}
+
+/* BOTÕES */
+.botao {
+    background: #2f9e44;
+    color: white;
+    border: none;
+    padding: 15px 40px;
+    border-radius: 60px;
+    cursor: pointer;
+    font-size: 28px;
+    font-weight: bold;
+    transition: transform 0.2s;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+}
+.botao:hover {
+    transform: scale(1.05);
+    background: #1e6b2f;
+}
+.centro {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 30;
+}
+
+/* ADELITA (remove fundo branco) */
+.adelita {
+    position: absolute;
+    left: 30px;
+    bottom: 20px;
+    height: 480px;
+    z-index: 5;
+    filter: drop-shadow(5px 5px 10px rgba(0,0,0,0.3));
+    mix-blend-mode: multiply;
+}
+
+/* CAIXA DE DIÁLOGO */
+.caixaDialogo {
+    position: absolute;
+    left: 320px;
+    bottom: 40px;
+    width: 550px;
+    min-height: 220px;
+    background: rgba(255,255,255,0.97);
+    border-radius: 30px;
+    padding: 25px;
+    z-index: 20;
+    backdrop-filter: blur(5px);
+}
+#textoDialogo, #textoTransicao, #textoCompostagem, #textoPlantio {
+    font-size: 24px;
+    line-height: 1.4;
+    color: #1e3a2f;
+    margin-bottom: 20px;
+}
+.seta {
+    position: absolute;
+    right: 20px;
+    bottom: 15px;
+    background: #2f9e44;
+    color: white;
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    font-size: 28px;
+    cursor: pointer;
+    border: none;
+}
+.seta:hover {
+    transform: scale(1.1);
+}
+#entradaNome {
+    margin-top: 20px;
+}
+#nomeJogador {
+    width: 100%;
+    padding: 12px;
+    font-size: 20px;
+    border-radius: 40px;
+    border: 2px solid #ccc;
+}
+#escolhaPersonagem {
+    display: none;
+    text-align: center;
+}
+.personagemEscolha {
+    width: 180px;
+    margin: 10px;
+    cursor: pointer;
+}
+.personagemEscolha:hover {
+    transform: scale(1.08);
+}
+
+/* HUD ABELHA */
+#hud {
+    position: absolute;
+    top: 100px;
+    left: 20px;
+    z-index: 30;
+    background: rgba(255,255,255,0.9);
+    padding: 12px 20px;
+    border-radius: 40px;
+    font-size: 22px;
+    font-weight: bold;
+}
+#abelha {
+    position: absolute;
+    width: 110px;
+    z-index: 15;
+    animation: flutuar 0.3s infinite alternate;
+}
+@keyframes flutuar {
+    from { transform: translateY(-5px); }
+    to { transform: translateY(5px); }
+}
+.objeto {
+    position: absolute;
+    width: 80px;
+    transition: left 0.05s linear;
+}
+
+/* COMPOSTAGEM */
+#composteiraArea {
+    position: absolute;
+    right: 80px;
+    top: 180px;
+}
+#composteira {
+    width: 320px;
+}
+#itensCompostagem {
+    position: absolute;
+    left: 40px;
+    bottom: 80px;
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    width: 650px;
+    background: rgba(255,255,240,0.8);
+    padding: 15px;
+    border-radius: 30px;
+}
+.item {
+    width: 100px;
+    cursor: grab;
+}
+.item:active { cursor: grabbing; }
+#contadorCompostagem {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    background: white;
+    padding: 10px 20px;
+    border-radius: 40px;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/* PLANTIO */
+#sementes {
+    position: absolute;
+    left: 30px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    background: rgba(255,255,255,0.8);
+    padding: 20px;
+    border-radius: 40px;
+    backdrop-filter: blur(5px);
+}
+.semente {
+    width: 130px;
+    cursor: pointer;
+}
+#areaPlantio {
+    position: relative;
+    width: 100%;
+    height: 70vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+}
+#terra {
+    width: 320px;
+    margin-bottom: 80px;
+}
+#regador {
+    position: absolute;
+    top: 280px;
+    right: 150px;
+    width: 140px;
+    cursor: pointer;
+    animation: balancar 1s infinite;
+}
+@keyframes balancar {
+    0% { transform: rotate(0deg); }
+    50% { transform: rotate(10deg); }
+    100% { transform: rotate(0deg); }
+}
+.seta-regador {
+    position: absolute;
+    top: 280px;
+    right: 100px;
+    font-size: 40px;
+    animation: piscar 1s infinite;
+    display: none;
+}
+@keyframes piscar {
+    0% { opacity: 1; }
+    50% { opacity: 0.3; }
+    100% { opacity: 1; }
+}
+#plantinha {
+    position: absolute;
+    bottom: 150px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 70px;
+    display: none;
+}
+#plantaFinal {
+    position: absolute;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    transition: width 0.1s linear;
+}
+
+/* CERTIFICADO */
+.certificadoFundo {
+    opacity: 0.6;
+}
+#certificado {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 85%;
+    max-width: 900px;
+    background: white;
+    padding: 40px;
+    border-radius: 30px;
+    text-align: center;
+    border: 8px solid #2f9e44;
+}
+#certificado h1 { color: #2f9e44; }
+#certificado ul { text-align: left; display: inline-block; font-size: 18px; margin: 20px 0; }
+
+/* RESPONSIVO */
+@media (max-width: 900px) {
+    .caixaDialogo { left: 20px; width: 90%; bottom: 20px; }
+    .adelita { height: 300px; }
+    .logos img, .logo-animada { height: 100px; }
+    .botao { font-size: 22px; padding: 10px 30px; }
+    .semente { width: 90px; }
+}
