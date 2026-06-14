@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", function() {
     let musicaTocando = false;
 
     if (botaoMusica && audio) {
-        audio.addEventListener("canplaythrough", () => console.log("✅ Música carregada (musica.mp3)."));
+        audio.addEventListener("canplaythrough", () => console.log("✅ Música carregada."));
         audio.addEventListener("error", () => {
             console.error("❌ Erro ao carregar musica.mp3");
             botaoMusica.disabled = true;
@@ -39,13 +39,12 @@ document.addEventListener("DOMContentLoaded", function() {
             emojiBee.id = 'abelha-emoji';
             emojiBee.textContent = '🐝';
             emojiBee.style.cssText = 'position:absolute; font-size:80px; width:auto; height:auto; z-index:15; animation:flutuar 0.3s infinite alternate; pointer-events:none;';
-            emojiBee.style.left = abelhaImg.style.left || (window.innerWidth * 0.25) + 'px';
+            emojiBee.style.left = abelhaImg.style.left || (window.innerWidth * 0.3) + 'px';
             emojiBee.style.top = abelhaImg.style.top || (window.innerHeight / 2 - 50) + 'px';
             abelhaImg.style.display = 'none';
             abelhaImg.parentNode.appendChild(emojiBee);
             abelhaElement = emojiBee;
             window.abelhaElement = emojiBee;
-            console.log("🐝 Usando emoji como fallback da abelha.");
         };
         abelhaImg.onload = function() {
             window.abelhaElement = abelhaImg;
@@ -57,13 +56,13 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
-    // Remove fundo branco da personagem
+    // Remove fundo branco das personagens
     document.querySelectorAll('.adelita, .adelita-final').forEach(el => {
         if (el) el.style.mixBlendMode = 'multiply';
     });
 
     // =============================================
-    // TRANSIÇÃO DA TELA INICIAL PARA INTRODUÇÃO
+    // TRANSIÇÃO DA TELA INICIAL
     // =============================================
     const telaInicial = document.getElementById("telaInicial");
     const introducao = document.getElementById("introducao");
@@ -75,16 +74,12 @@ document.addEventListener("DOMContentLoaded", function() {
             introducao.classList.add("ativa");
             mostrarFala();
         });
-    } else {
-        console.error("Elementos de tela ou botão não encontrados!");
     }
 
     // =============================================
-    // DIÁLOGOS DA INTRODUÇÃO (12 falas)
+    // DIÁLOGOS DA INTRODUÇÃO
     // =============================================
-    let nomeJogador = "";
-    let personagemEscolhido = "";
-    let falaAtual = 0;
+    let nomeJogador = "", personagemEscolhido = "", falaAtual = 0;
 
     const falas = [
         "Olá! Eu sou a Adelita e faço parte dos AgroHeróis!\n\nQual é o seu nome?",
@@ -154,7 +149,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     // =============================================
-    // FASE ABELHA (com aceleração após 5 flores e posição ajustada)
+    // FASE ABELHA (com correções e aceleração)
     // =============================================
     let jogoRodando = false;
     let floresColetadas = 0;
@@ -162,9 +157,9 @@ document.addEventListener("DOMContentLoaded", function() {
     let posYAbelha = 300;
     let intervaloObjetos;
     let animacaoLoop;
-    let velocidadeAtual = 2.8;      // velocidade inicial (px/frame)
-    let intervaloAtual = 2000;      // intervalo inicial (ms)
-    let aceleracaoAtivada = false;   // controla se já acelerou
+    let velocidadeAtual = 2.8;      // velocidade inicial
+    let acelerou = false;           // já acelerou?
+    let vitoria = false;            // impede múltiplas vitórias
 
     const faseAbelha = document.getElementById("faseAbelha");
     const objetosJogo = document.getElementById("objetosJogo");
@@ -185,17 +180,17 @@ document.addEventListener("DOMContentLoaded", function() {
         jogoRodando = true;
         floresColetadas = 0;
         vidas = 3;
-        aceleracaoAtivada = false;
+        acelerou = false;
+        vitoria = false;
         velocidadeAtual = 2.8;
-        intervaloAtual = 2000;
         posYAbelha = window.innerHeight / 2 - 50;
-        // Posiciona a abelha mais à frente (30% da largura)
+        // Abelha mais à frente: 30% da largura
         const leftPos = (window.innerWidth * 0.3) + "px";
         setAbelhaLeft(leftPos);
         setAbelhaTop(posYAbelha);
         atualizarHUD();
         if (intervaloObjetos) clearInterval(intervaloObjetos);
-        intervaloObjetos = setInterval(criarObjeto, intervaloAtual);
+        intervaloObjetos = setInterval(criarObjeto, 2000);
         animacaoLoop = requestAnimationFrame(loopJogo);
     }
 
@@ -236,70 +231,49 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-    // Função de colisão mais precisa (verifica sobreposição real)
     function colidiu(a, b) {
         const r1 = a.getBoundingClientRect();
         const r2 = b.getBoundingClientRect();
-        // Reduz a hitbox da abelha em 20% para evitar colisões falsas
-        const hitboxA = {
-            top: r1.top + 10,
-            bottom: r1.bottom - 10,
-            left: r1.left + 10,
-            right: r1.right - 10
-        };
-        const hitboxB = {
-            top: r2.top + 5,
-            bottom: r2.bottom - 5,
-            left: r2.left + 5,
-            right: r2.right - 5
-        };
-        return !(hitboxA.top > hitboxB.bottom || hitboxA.bottom < hitboxB.top || hitboxA.left > hitboxB.right || hitboxA.right < hitboxB.left);
+        return !(r1.top > r2.bottom || r1.bottom < r2.top || r1.left > r2.right || r1.right < r2.left);
     }
 
     function loopJogo() {
-        if (!jogoRodando) return;
+        if (!jogoRodando || vitoria) return;
         const objetos = document.querySelectorAll(".objeto");
         objetos.forEach(obj => {
             let x = parseFloat(obj.style.left);
             x -= velocidadeAtual;
             obj.style.left = x + "px";
             if (x + obj.offsetWidth < 0) obj.remove();
+            
             if (abelhaElement && colidiu(abelhaElement, obj)) {
                 if (obj.dataset.tipo === "flor") {
                     floresColetadas++;
                     atualizarHUD();
                     obj.remove();
-                    // Verifica se atingiu 5 flores e ainda não acelerou
-                    if (floresColetadas >= 5 && !aceleracaoAtivada && floresColetadas < 10) {
-                        aceleracaoAtivada = true;
-                        velocidadeAtual = 4.5;      // aumenta velocidade
-                        clearInterval(intervaloObjetos);
-                        intervaloAtual = 1500;       // reduz intervalo
-                        intervaloObjetos = setInterval(criarObjeto, intervaloAtual);
-                        // Exibe mensagem opcional (pode remover)
-                        const msg = document.createElement('div');
-                        msg.textContent = "⚡ Acelerou! ⚡";
-                        msg.style.position = "absolute";
-                        msg.style.top = "50%";
-                        msg.style.left = "50%";
-                        msg.style.transform = "translate(-50%, -50%)";
-                        msg.style.backgroundColor = "rgba(0,0,0,0.7)";
-                        msg.style.color = "yellow";
-                        msg.style.padding = "10px 20px";
-                        msg.style.borderRadius = "30px";
-                        msg.style.fontSize = "24px";
-                        msg.style.zIndex = "200";
-                        msg.style.fontWeight = "bold";
-                        document.body.appendChild(msg);
-                        setTimeout(() => msg.remove(), 1500);
+                    // Aceleração após 5 flores (apenas uma vez)
+                    if (floresColetadas >= 5 && !acelerou) {
+                        acelerou = true;
+                        velocidadeAtual = 4.2;
+                        console.log("🚀 Acelerou! Velocidade agora:", velocidadeAtual);
                     }
-                    if (floresColetadas >= 10) vencerFaseAbelha();
+                    // Vitória ao coletar 10 flores
+                    if (floresColetadas >= 10 && !vitoria) {
+                        vitoria = true;
+                        vencerFaseAbelha();
+                    }
                 } else {
-                    // Só perde vida se realmente colidiu com fogo ou fumaça
-                    vidas--;
-                    atualizarHUD();
+                    // Obstáculo: só perde vida se ainda não tiver sido atingido por este objeto
+                    if (!obj.dataset.hit) {
+                        obj.dataset.hit = "true";
+                        vidas--;
+                        atualizarHUD();
+                        if (vidas <= 0 && !vitoria) {
+                            vitoria = true;
+                            perderFase();
+                        }
+                    }
                     obj.remove();
-                    if (vidas <= 0) perderFase();
                 }
             }
         });
@@ -333,7 +307,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // =============================================
-    // DIÁLOGOS E FASE DE COMPOSTAGEM
+    // COMPOSTAGEM (completa)
     // =============================================
     const transicaoCompostagem = document.getElementById("transicaoCompostagem");
     const textoCompostagemDiv = document.getElementById("textoCompostagem");
@@ -422,7 +396,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // =============================================
-    // DIÁLOGOS E FASE DE PLANTIO (com todas as sementes funcionando)
+    // PLANTIO (todas as sementes funcionam)
     // =============================================
     const transicaoPlantio = document.getElementById("transicaoPlantio");
     const textoPlantioDiv = document.getElementById("textoPlantio");
@@ -474,8 +448,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     function iniciarPlantioFase() {
         plantioTela.classList.add("ativa");
-        // Recria as sementes para garantir eventos limpos
-        const sementesContainer = document.getElementById("sementes");
+        // Recriar sementes para evitar eventos duplicados
         const sementesOriginais = document.querySelectorAll(".semente");
         sementesOriginais.forEach(s => {
             const clone = s.cloneNode(true);
@@ -499,6 +472,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 alert(`🌱 Você escolheu ${sementeEscolhida}! Agora regue a planta.`);
                 regador.style.display = "block";
                 setaRegador.style.display = "block";
+                // Recriar regador para evento único
                 const novoRegador = regador.cloneNode(true);
                 regador.parentNode.replaceChild(novoRegador, regador);
                 const novoRegadorElem = document.getElementById("regador");
@@ -570,5 +544,5 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    console.log("✅ Jogo AgroHeróis carregado – aceleração após 5 flores, hitbox ajustada, abelha mais à frente.");
+    console.log("✅ Jogo AgroHeróis carregado – correções: vidas só perde em colisão real, aceleração após 5 flores, abelha a 30%.");
 });
