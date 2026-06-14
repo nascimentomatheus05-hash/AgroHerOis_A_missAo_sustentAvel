@@ -67,4 +67,39 @@ Ao final, o jogador recebe um **certificado personalizado** com seu nome, podend
 
 ---
 
-## 📁 Estrutura de Arquivos
+## 🙏 Agradecimentos especiais
+
+Este jogo foi realizado com **sonho, carinho e atenção** – cada detalhe foi pensado para transmitir conhecimento e diversão. Agradeço de coração:
+
+- À minha **família**: minha mãe **Sandra de Souza Nascimento**, meu pai **Luscimarque**, por todo amor, incentivo e apoio incondicional.
+- A **Deus**, pela força e sabedoria durante toda a jornada.
+- Ao **Colégio Estadual Antonio Tortato** (Paranacity), na pessoa do diretor **Felipe Nitsche** e da pedagoga **Gabriela**, pelo ambiente acolhedor e oportunidades.
+- À minha orientadora, **Professora Mestra Patrícia Ariadny Ferro**, pela paciência, ensinamentos e por acreditar no projeto.
+- Ao **Sistema FAEP** (Federação da Agricultura do Estado do Paraná) e ao **SENAR** (Serviço Nacional de Aprendizagem Rural), pelo apoio à educação no campo.
+- À **SEED** (Secretaria de Estado da Educação do Paraná) e à **NRE de Paranavaí**, pelo suporte à inovação pedagógica.
+- Ao **embaixador da programação Fernando Masut**, pela inspiração e incentivo à tecnologia.
+
+Sem vocês, este sonho não seria possível. Muito obrigado!
+
+---
+
+## 👥 Créditos
+
+- **Desenvolvedor:** Matheus Souza Nascimento – aluno do 2º ano D – Noturno  
+  Colégio Estadual Antonio Tortato – Paranacity
+- **Orientadora:** Professora Mestra Patrícia Ariadny Ferro
+- **Apoio Institucional:** Colégio Estadual Antonio Tortato, NRE Paranavaí, SEED, FAEP, SENAR
+
+---
+
+## 📄 Licença
+
+Este projeto está sob a licença **MIT** – consulte o arquivo [LICENSE](LICENSE) para mais detalhes.
+
+
+---
+
+> **Agro Forte, Futuro Sustentável – Equilíbrio entre Produção e Meio Ambiente.** 🌍🌾  
+> *Com sonho, carinho e atenção – para um amanhã mais sustentável.*
+
+
