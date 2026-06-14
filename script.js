@@ -91,7 +91,7 @@ document.addEventListener("DOMContentLoaded", function() {
         "Sem as abelhas e outros polinizadores, a produção de muitos alimentos seria muito menor.\n\nPor isso, sua missão será ajudar uma abelha a coletar flores.",
         "Como jogar:\n\n⬆️ Seta para cima = subir\n⬇️ Seta para baixo = descer",
         "Seu objetivo é:\n\nColetar flores pelo caminho.\nCada flor ajuda na polinização e aumenta sua pontuação.",
-        "Mas atenção!\n\n🚫 Não chegue perto do fogo.\n🚫 Nem da fumaça.\nSe encostar, perderá energia.",
+        "Mas atenção!\n\n🚫 Não toque no fogo.\n🚫 Não toque na fumaça.\nSe encostar, perderá energia.",
         "Quando você coletar 10 flores, ajudará a natureza e mostrará como a polinização é essencial para um Agro Forte e um Futuro Sustentável.",
         "Clique para começar sua missão."
     ];
@@ -303,7 +303,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // =============================================
-    // COMPOSTAGEM (completa)
+    // COMPOSTAGEM
     // =============================================
     const transicaoCompostagem = document.getElementById("transicaoCompostagem");
     const textoCompostagemDiv = document.getElementById("textoCompostagem");
@@ -313,10 +313,10 @@ document.addEventListener("DOMContentLoaded", function() {
     const contadorCompostagemSpan = document.getElementById("contadorCompostagem");
 
     const falasCompostagem = [
-        "Muito bem, [NOME]!\n\nAgora vamos aprender sobre a compostagem.\nA compostagem transforma restos de alimentos e folhas em adubo natural, ajudando as plantas a crescerem fortes e saudáveis.",
+        "Muito bem, [NOME]!\n\nAgora vamos aprender sobre a compostagem.\nA compostagem transforma restos de alimentos e folhas em adubo natural.",
         "Sua missão: arraste os materiais corretos para a composteira.\n✅ Pode colocar: cascas de frutas, cascas de legumes, folhas secas.",
-        "❌ Não pode colocar: plástico, vidro, latas.\nSepare os resíduos corretamente e ajude a cuidar do meio ambiente.",
-        "Clique em COMEÇAR para iniciar a separação dos resíduos."
+        "❌ Não pode colocar: plástico, vidro, latas.\nSepare os resíduos corretamente.",
+        "Clique em COMEÇAR para iniciar."
     ];
     let falaCompAtual = 0;
 
@@ -392,7 +392,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // =============================================
-    // PLANTIO CORRIGIDO – todas as sementes funcionam
+    // PLANTIO CORRIGIDO – TODAS AS SEMENTES FUNCIONAM
     // =============================================
     const transicaoPlantio = document.getElementById("transicaoPlantio");
     const textoPlantioDiv = document.getElementById("textoPlantio");
@@ -442,14 +442,21 @@ document.addEventListener("DOMContentLoaded", function() {
         iniciarPlantioFase();
     });
 
-    // Função que realmente inicia a fase de plantio – versão corrigida
     function iniciarPlantioFase() {
         plantioTela.classList.add("ativa");
 
-        // Obtém o container das sementes e suas imagens diretamente (sem clonagem desnecessária)
-        const containerSementes = document.getElementById("sementes");
-        // Garante que todas as sementes estão visíveis e com seus atributos originais
+        // Obtém o container das sementes
         const sementes = document.querySelectorAll(".semente");
+        
+        // Garante que todas as sementes estão visíveis e com estilo correto
+        sementes.forEach(s => {
+            s.style.display = "inline-block";
+            s.style.cursor = "pointer";
+        });
+        
+        // Remove qualquer planta final residual
+        const plantaExistente = document.getElementById("plantaFinal");
+        if (plantaExistente) plantaExistente.remove();
         
         // Reseta o estado
         regador.style.display = "none";
@@ -457,28 +464,22 @@ document.addEventListener("DOMContentLoaded", function() {
         setaRegador.style.display = "none";
         sementeEscolhida = "";
         
-        // Remove qualquer planta final residual
-        const plantaExistente = document.getElementById("plantaFinal");
-        if (plantaExistente) plantaExistente.remove();
-        
-        // Remove todos os listeners antigos das sementes (para evitar duplicação)
-        // Para isso, clonamos cada semente e substituímos, assim perdemos os listeners antigos
+        // Remove todos os listeners antigos (clonando cada semente)
         sementes.forEach(semente => {
             const novaSemente = semente.cloneNode(true);
             semente.parentNode.replaceChild(novaSemente, semente);
         });
         
-        // Seleciona as novas sementes (agora sem listeners)
+        // Seleciona as novas sementes
         const novasSementes = document.querySelectorAll(".semente");
         
-        // Adiciona evento de clique para cada semente individualmente
+        // Adiciona evento de clique para cada semente
         novasSementes.forEach(semente => {
             semente.addEventListener("click", function(e) {
                 e.stopPropagation();
-                // Impede que selecione outra semente depois de já ter escolhido uma
+                // Impede que selecione mais de uma
                 if (sementeEscolhida !== "") return;
                 
-                // Obtém o tipo da semente pelo atributo data-semente
                 const tipo = this.getAttribute("data-semente");
                 if (!tipo) {
                     console.error("Semente sem atributo data-semente:", this);
@@ -487,26 +488,26 @@ document.addEventListener("DOMContentLoaded", function() {
                 sementeEscolhida = tipo;
                 console.log("Semente escolhida:", sementeEscolhida);
                 
-                // Esconde todas as sementes (opcional, mas mantém a escolhida visível)
+                // Esconde as sementes não escolhidas
                 novasSementes.forEach(s => s.style.display = "none");
                 this.style.display = "block";
                 
                 alert(`🌱 Você escolheu ${sementeEscolhida}! Agora regue a planta.`);
                 
-                // Mostra o regador e a seta
+                // Mostra regador e seta
                 regador.style.display = "block";
                 setaRegador.style.display = "block";
                 
-                // Cria um evento de clique no regador (apenas uma vez)
-                const handleRegar = function() {
+                // Evento único para regar
+                const regarHandler = function() {
                     if (!sementeEscolhida) return;
                     regador.style.display = "none";
                     setaRegador.style.display = "none";
                     plantinha.style.display = "block";
                     setTimeout(() => crescerPlanta(sementeEscolhida), 2000);
-                    regador.removeEventListener("click", handleRegar);
+                    regador.removeEventListener("click", regarHandler);
                 };
-                regador.addEventListener("click", handleRegar, { once: true });
+                regador.addEventListener("click", regarHandler, { once: true });
             });
         });
     }
@@ -521,11 +522,10 @@ document.addEventListener("DOMContentLoaded", function() {
         else if (tipo === "tomate") src = "tomatecresce.png";
         else if (tipo === "soja") src = "sojacrece.png";
         else {
-            console.error("Tipo de semente inválido:", tipo);
-            src = "sojacrece.png"; // fallback
+            console.error("Tipo inválido:", tipo);
+            src = "sojacrece.png";
         }
         
-        // Fallback caso a imagem não exista
         plantaFinal.onerror = function() {
             console.warn("Imagem não encontrada:", src);
             this.src = "sojacrece.png";
@@ -581,5 +581,5 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    console.log("✅ Jogo AgroHeróis carregado – plantio corrigido (todas as sementes funcionam)");
+    console.log("✅ Jogo AgroHeróis carregado – todas as sementes funcionam.");
 });
