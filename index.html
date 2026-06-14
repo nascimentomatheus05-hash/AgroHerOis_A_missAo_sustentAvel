@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>AgroHeróis - Agro Forte, Futuro Sustentável</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- TELA INICIAL -->
+<section id="telaInicial" class="tela ativa">
+    <div class="fundo-inicial-container">
+        <img src="3.png" class="imagem-central" alt="Agro Forte">
+    </div>
+    <div class="logos-iniciais">
+        <div class="logos-esquerda">
+            <img src="logo.png" class="logo-animada logo-grande" alt="Logo">
+            <img src="logo2.png" class="logo-animada logo-grande" alt="Logo2">
+        </div>
+        <div class="logos-direita">
+            <img src="logo1.png" class="logo-animada logo-grande" alt="Logo1">
+        </div>
+    </div>
+    <div class="centro">
+        <button id="btnComecar" class="botao">COMEÇAR</button>
+    </div>
+    <div class="rodape">
+        <p>jogo desenvolvido por Matheus Souza Nascimento – aluno 2º D Noturno</p>
+        <p>Orientadora: Professora Mestre Patrícia Ariadny Ferro</p>
+        <p>Colégio Estadual Antonio Tortato – NRE Paranavaí</p>
+    </div>
+</section>
+
+<!-- BOTÃO DE MÚSICA (FLUTUANTE) -->
+<button id="btnMusica" class="botao-musica">🎵</button>
+
+<!-- ÁUDIO (loop, começa pausado) -->
+<audio id="musicaFundo" loop preload="auto">
+    <source src="musica.mp3" type="audio/mpeg">
+    Seu navegador não suporta áudio.
+</audio>
+
+<!-- INTRODUÇÃO (DIÁLOGOS) -->
+<section id="introducao" class="tela">
+    <img src="1.png" class="fundo" alt="Fundo">
+    <div class="logos">
+        <img src="logo.png"><img src="logo1.png"><img src="logo2.png">
+    </div>
+    <img src="principal1.png" class="adelita">
+    <div class="caixaDialogo">
+        <div id="textoDialogo"></div>
+        <div id="entradaNome"><input type="text" id="nomeJogador" placeholder="Digite seu nome"></div>
+        <div id="escolhaPersonagem">
+            <h3>Escolha seu personagem</h3>
+            <img src="menina.png" id="menina" class="personagemEscolha">
+            <img src="menino.png" id="menino" class="personagemEscolha">
+        </div>
+        <button id="btnProximo" class="seta">➜</button>
+    </div>
+</section>
+
+<!-- TRANSIÇÃO 1 -->
+<section id="transicao1" class="tela">
+    <img src="1.png" class="fundo">
+    <div class="logos"><img src="logo.png"><img src="logo1.png"><img src="logo2.png"></div>
+    <img src="principal2.png" class="adelita">
+    <div class="caixaDialogo"><div id="textoTransicao"></div><button id="btnContinuarTransicao" class="botao">CONTINUAR</button></div>
+</section>
+
+<!-- FASE ABELHA -->
+<section id="faseAbelha" class="tela">
+    <img src="1.png" class="fundo">
+    <div class="logos"><img src="logo.png"><img src="logo1.png"><img src="logo2.png"></div>
+    <div id="hud"><div id="contadorFlores">🌸 Flores: 0 / 10</div><div id="vidas">❤️ Vidas: 3</div></div>
+    <img src="a.png" id="abelha">
+    <div id="objetosJogo"></div>
+</section>
+
+<!-- SUCESSO ABELHA -->
+<section id="sucessoAbelha" class="tela">
+    <img src="1.png" class="fundo">
+    <div class="logos"><img src="logo.png"><img src="logo1.png"><img src="logo2.png"></div>
+    <div class="caixaDialogo" style="text-align:center;"><h2>🌸 Missão Cumprida! 🌸</h2><p id="msgSucesso"></p><button id="btnProxCompostagem" class="botao">CONTINUAR</button></div>
+</section>
+
+<!-- TRANSIÇÃO COMPOSTAGEM -->
+<section id="transicaoCompostagem" class="tela">
+    <img src="1.png" class="fundo">
+    <div class="logos"><img src="logo.png"><img src="logo1.png"><img src="logo2.png"></div>
+    <img src="principal2.png" class="adelita">
+    <div class="caixaDialogo"><div id="textoCompostagem"></div><button id="btnIniciarCompostagem" class="botao" style="display:none;">COMEÇAR</button><button id="btnProxFalaCompostagem" class="seta">➜</button></div>
+</section>
+
+<!-- FASE COMPOSTAGEM -->
+<section id="compostagemTela" class="tela">
+    <img src="4.png" class="fundo">
+    <div id="composteiraArea"><img src="compostagem.png" id="composteira"></div>
+    <div id="itensCompostagem">
+        <img src="melancia.png" draggable="true" class="item" data-correto="true">
+        <img src="banana.png" draggable="true" class="item" data-correto="true">
+        <img src="maca.png" draggable="true" class="item" data-correto="true">
+        <img src="ovo.png" draggable="true" class="item" data-correto="true">
+        <img src="lata.png" draggable="true" class="item" data-correto="false">
+        <img src="metal.png" draggable="true" class="item" data-correto="false">
+    </div>
+    <div id="contadorCompostagem">Acertos: 0 / 4</div>
+</section>
+
+<!-- TRANSIÇÃO PLANTIO -->
+<section id="transicaoPlantio" class="tela">
+    <img src="2.png" class="fundo">
+    <div class="logos"><img src="logo.png"><img src="logo1.png"><img src="logo2.png"></div>
+    <img src="principal1.png" class="adelita">
+    <div class="caixaDialogo"><div id="textoPlantio"></div><button id="btnIniciarPlantio" class="botao" style="display:none;">COMEÇAR</button><button id="btnProxFalaPlantio" class="seta">➜</button></div>
+</section>
+
+<!-- FASE PLANTIO -->
+<section id="plantioTela" class="tela">
+    <img src="2.png" class="fundo">
+    <div id="sementes">
+        <img src="sementemilho.png" class="semente" data-semente="milho">
+        <img src="sementetomate.png" class="semente" data-semente="tomate">
+        <img src="sementesoja.png" class="semente" data-semente="soja">
+    </div>
+    <div id="areaPlantio">
+        <img src="terra.png" id="terra">
+        <img src="regua.png" id="regador" style="display:none;">
+        <img src="plantinha.png" id="plantinha" style="display:none;">
+        <div id="setaRegador" class="seta-regador">👇</div>
+    </div>
+</section>
+
+<!-- TELA FINAL -->
+<section id="telaFinal" class="tela">
+    <img src="1.png" class="fundo">
+    <div class="logos"><img src="logo.png"><img src="logo1.png"><img src="logo2.png"></div>
+    <img src="principal3.png" class="adelita">
+    <div class="caixaDialogo"><h2>Parabéns!</h2><p id="mensagemFinal"></p><button id="btnCertificado" class="botao">VER CERTIFICADO</button></div>
+</section>
+
+<!-- CERTIFICADO -->
+<section id="certificadoTela" class="tela">
+    <img src="3.png" class="fundo certificadoFundo">
+    <div id="certificado">
+        <h1>CERTIFICADO DE AGROHERÓI</h1>
+        <h2 id="nomeCertificado"></h2>
+        <p>Concluiu com sucesso todas as missões do projeto<br><strong>Agro Forte, Futuro Sustentável</strong><br>Equilíbrio entre Produção e Meio Ambiente</p>
+        <ul><li>Polinização</li><li>Compostagem</li><li>Plantio</li><li>Sustentabilidade</li></ul>
+        <h3>AGROHERÓI DO FUTURO SUSTENTÁVEL</h3>
+        <p><em>Adelita – AgroHeróis</em></p>
+        <button id="baixarPDF" class="botao">BAIXAR CERTIFICADO (PDF)</button>
+    </div>
+</section>
+
+<script src="script.js"></script>
+</body>
+</html>
