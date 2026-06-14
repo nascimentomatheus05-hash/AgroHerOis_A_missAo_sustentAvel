@@ -91,7 +91,7 @@ document.addEventListener("DOMContentLoaded", function() {
         "Sem as abelhas e outros polinizadores, a produção de muitos alimentos seria muito menor.\n\nPor isso, sua missão será ajudar uma abelha a coletar flores.",
         "Como jogar:\n\n⬆️ Seta para cima = subir\n⬇️ Seta para baixo = descer",
         "Seu objetivo é:\n\nColetar flores pelo caminho.\nCada flor ajuda na polinização e aumenta sua pontuação.",
-        "Mas atenção!\n\n🚫 Não toque no fogo.\n🚫 Não toque na fumaça.\nSe encostar, perderá energia.",
+        "Mas atenção!\n\n🚫 Não chegue perto do fogo.\n🚫 Nem da fumaça.\nSe encostar, perderá energia.",
         "Quando você coletar 10 flores, ajudará a natureza e mostrará como a polinização é essencial para um Agro Forte e um Futuro Sustentável.",
         "Clique para começar sua missão."
     ];
@@ -149,7 +149,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     // =============================================
-    // FASE ABELHA (corrigida)
+    // FASE ABELHA (com aceleração e correção de vidas)
     // =============================================
     let jogoRodando = false;
     let floresColetadas = 0;
@@ -303,7 +303,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // =============================================
-    // COMPOSTAGEM
+    // COMPOSTAGEM (completa)
     // =============================================
     const transicaoCompostagem = document.getElementById("transicaoCompostagem");
     const textoCompostagemDiv = document.getElementById("textoCompostagem");
@@ -313,10 +313,10 @@ document.addEventListener("DOMContentLoaded", function() {
     const contadorCompostagemSpan = document.getElementById("contadorCompostagem");
 
     const falasCompostagem = [
-        "Muito bem, [NOME]!\n\nAgora vamos aprender sobre a compostagem.\nA compostagem transforma restos de alimentos e folhas em adubo natural.",
+        "Muito bem, [NOME]!\n\nAgora vamos aprender sobre a compostagem.\nA compostagem transforma restos de alimentos e folhas em adubo natural, ajudando as plantas a crescerem fortes e saudáveis.",
         "Sua missão: arraste os materiais corretos para a composteira.\n✅ Pode colocar: cascas de frutas, cascas de legumes, folhas secas.",
-        "❌ Não pode colocar: plástico, vidro, latas.\nSepare os resíduos corretamente.",
-        "Clique em COMEÇAR para iniciar."
+        "❌ Não pode colocar: plástico, vidro, latas.\nSepare os resíduos corretamente e ajude a cuidar do meio ambiente.",
+        "Clique em COMEÇAR para iniciar a separação dos resíduos."
     ];
     let falaCompAtual = 0;
 
@@ -444,51 +444,50 @@ document.addEventListener("DOMContentLoaded", function() {
 
     function iniciarPlantioFase() {
         plantioTela.classList.add("ativa");
-
-        // Obtém o container das sementes
+        
+        // Obtém todas as sementes
         const sementes = document.querySelectorAll(".semente");
         
-        // Garante que todas as sementes estão visíveis e com estilo correto
-        sementes.forEach(s => {
-            s.style.display = "inline-block";
-            s.style.cursor = "pointer";
-        });
-        
-        // Remove qualquer planta final residual
-        const plantaExistente = document.getElementById("plantaFinal");
-        if (plantaExistente) plantaExistente.remove();
-        
-        // Reseta o estado
+        // Resetar estado
         regador.style.display = "none";
         plantinha.style.display = "none";
         setaRegador.style.display = "none";
         sementeEscolhida = "";
         
-        // Remove todos os listeners antigos (clonando cada semente)
+        // Remove planta final existente
+        const plantaExistente = document.getElementById("plantaFinal");
+        if (plantaExistente) plantaExistente.remove();
+        
+        // Garantir que todas as sementes estejam visíveis e com o atributo correto
         sementes.forEach(semente => {
-            const novaSemente = semente.cloneNode(true);
-            semente.parentNode.replaceChild(novaSemente, semente);
+            semente.style.display = "inline-block";
+            semente.style.cursor = "pointer";
         });
         
-        // Seleciona as novas sementes
-        const novasSementes = document.querySelectorAll(".semente");
+        // Remove todos os listeners antigos clonando e substituindo (método seguro)
+        const novasSementes = [];
+        sementes.forEach((semente, index) => {
+            const clone = semente.cloneNode(true);
+            semente.parentNode.replaceChild(clone, semente);
+            novasSementes.push(clone);
+        });
         
-        // Adiciona evento de clique para cada semente
+        // Adiciona evento de clique para cada semente individualmente
         novasSementes.forEach(semente => {
             semente.addEventListener("click", function(e) {
                 e.stopPropagation();
-                // Impede que selecione mais de uma
-                if (sementeEscolhida !== "") return;
+                if (sementeEscolhida !== "") return; // já escolheu uma semente
                 
+                // Obtém o tipo pelo atributo data-semente
                 const tipo = this.getAttribute("data-semente");
                 if (!tipo) {
-                    console.error("Semente sem atributo data-semente:", this);
+                    console.error("Semente sem data-semente:", this);
                     return;
                 }
                 sementeEscolhida = tipo;
                 console.log("Semente escolhida:", sementeEscolhida);
                 
-                // Esconde as sementes não escolhidas
+                // Esconde todas as sementes (opcional, mantém a escolhida)
                 novasSementes.forEach(s => s.style.display = "none");
                 this.style.display = "block";
                 
@@ -498,22 +497,21 @@ document.addEventListener("DOMContentLoaded", function() {
                 regador.style.display = "block";
                 setaRegador.style.display = "block";
                 
-                // Evento único para regar
-                const regarHandler = function() {
+                // Evento de regar (uma única vez)
+                const handleRegar = function() {
                     if (!sementeEscolhida) return;
                     regador.style.display = "none";
                     setaRegador.style.display = "none";
                     plantinha.style.display = "block";
                     setTimeout(() => crescerPlanta(sementeEscolhida), 2000);
-                    regador.removeEventListener("click", regarHandler);
+                    regador.removeEventListener("click", handleRegar);
                 };
-                regador.addEventListener("click", regarHandler, { once: true });
+                regador.addEventListener("click", handleRegar, { once: true });
             });
         });
     }
 
     function crescerPlanta(tipo) {
-        // Remove a plantinha temporária
         if (plantinha.parentNode) plantinha.remove();
         
         const plantaFinal = document.createElement("img");
@@ -526,6 +524,7 @@ document.addEventListener("DOMContentLoaded", function() {
             src = "sojacrece.png";
         }
         
+        // Fallback caso a imagem não exista
         plantaFinal.onerror = function() {
             console.warn("Imagem não encontrada:", src);
             this.src = "sojacrece.png";
@@ -581,5 +580,5 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    console.log("✅ Jogo AgroHeróis carregado – todas as sementes funcionam.");
+    console.log("✅ Jogo AgroHeróis carregado – todas as sementes funcionam!");
 });
