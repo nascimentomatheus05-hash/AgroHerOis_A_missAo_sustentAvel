@@ -39,8 +39,8 @@ document.addEventListener("DOMContentLoaded", function() {
             emojiBee.id = 'abelha-emoji';
             emojiBee.textContent = '🐝';
             emojiBee.style.cssText = 'position:absolute; font-size:80px; width:auto; height:auto; z-index:15; animation:flutuar 0.3s infinite alternate; pointer-events:none;';
-            emojiBee.style.left = abelhaImg.style.left || (window.innerWidth * 0.4) + 'px';
-            emojiBee.style.top = abelhaImg.style.top || (window.innerHeight / 2 - 50) + 'px';
+            emojiBee.style.left = (window.innerWidth * 0.4) + 'px';
+            emojiBee.style.top = (window.innerHeight / 2 - 50) + 'px';
             abelhaImg.style.display = 'none';
             abelhaImg.parentNode.appendChild(emojiBee);
             abelhaElement = emojiBee;
@@ -149,7 +149,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     // =============================================
-    // FASE ABELHA (abelha a 40% da largura)
+    // FASE ABELHA – POSIÇÃO FIXA EM 40% DA LARGURA
     // =============================================
     let jogoRodando = false;
     let floresColetadas = 0;
@@ -175,6 +175,25 @@ document.addEventListener("DOMContentLoaded", function() {
         if (abelhaElement) abelhaElement.style.left = left + "px";
     }
 
+    function atualizarPosicaoAbelha() {
+        if (!abelhaElement) return;
+        const novaPosX = window.innerWidth * 0.4;
+        setAbelhaLeft(novaPosX + "px");
+        // Se a abelha estiver muito perto da borda direita, ajusta
+        if (novaPosX + 100 > window.innerWidth) {
+            setAbelhaLeft((window.innerWidth - 110) + "px");
+        }
+    }
+
+    window.addEventListener("resize", function() {
+        if (faseAbelha.classList.contains("ativa") && jogoRodando) {
+            atualizarPosicaoAbelha();
+            // Reajusta a altura também
+            posYAbelha = Math.min(window.innerHeight - 80, Math.max(20, posYAbelha));
+            setAbelhaTop(posYAbelha);
+        }
+    });
+
     function iniciarFaseAbelha() {
         faseAbelha.classList.add("ativa");
         jogoRodando = true;
@@ -184,7 +203,7 @@ document.addEventListener("DOMContentLoaded", function() {
         vitoria = false;
         velocidadeAtual = 2.8;
         posYAbelha = window.innerHeight / 2 - 50;
-        // Abelha a 40% da largura da tela (mais para o meio)
+        // Posição horizontal: 40% da largura
         const leftPos = (window.innerWidth * 0.4) + "px";
         setAbelhaLeft(leftPos);
         setAbelhaTop(posYAbelha);
@@ -304,7 +323,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // =============================================
-    // COMPOSTAGEM (igual, sem alterações)
+    // COMPOSTAGEM (mesmo código, sem alterações)
     // =============================================
     const transicaoCompostagem = document.getElementById("transicaoCompostagem");
     const textoCompostagemDiv = document.getElementById("textoCompostagem");
@@ -393,7 +412,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // =============================================
-    // PLANTIO CORRIGIDO – DELEGAÇÃO DE EVENTOS (mais robusto)
+    // PLANTIO – CADA SEMENTE COM SEU PRÓPRIO EVENTO
     // =============================================
     const transicaoPlantio = document.getElementById("transicaoPlantio");
     const textoPlantioDiv = document.getElementById("textoPlantio");
@@ -443,102 +462,68 @@ document.addEventListener("DOMContentLoaded", function() {
         iniciarPlantioFase();
     });
 
+    // Função que configura os eventos de clique para cada semente
+    function configurarSementes() {
+        const sementes = document.querySelectorAll(".semente");
+        sementes.forEach(semente => {
+            // Remove event listeners antigos (evita duplicação)
+            const novaSemente = semente.cloneNode(true);
+            semente.parentNode.replaceChild(novaSemente, semente);
+            novaSemente.addEventListener("click", function(e) {
+                e.stopPropagation();
+                if (sementeEscolhida !== "") return;
+                const tipo = this.getAttribute("data-semente");
+                if (!tipo) {
+                    console.error("Semente sem data-semente:", this);
+                    return;
+                }
+                sementeEscolhida = tipo;
+                console.log("Semente escolhida:", sementeEscolhida);
+                // Esconde todas as sementes
+                document.querySelectorAll(".semente").forEach(s => s.style.display = "none");
+                this.style.display = "block";
+                alert(`🌱 Você escolheu ${sementeEscolhida}! Agora regue a planta.`);
+                regador.style.display = "block";
+                setaRegador.style.display = "block";
+                const handleRegar = function() {
+                    if (!sementeEscolhida) return;
+                    regador.style.display = "none";
+                    setaRegador.style.display = "none";
+                    plantinha.style.display = "block";
+                    setTimeout(() => crescerPlanta(sementeEscolhida), 2000);
+                    regador.removeEventListener("click", handleRegar);
+                };
+                regador.addEventListener("click", handleRegar, { once: true });
+            });
+        });
+    }
+
     function iniciarPlantioFase() {
         plantioTela.classList.add("ativa");
-        
         // Resetar estado
         regador.style.display = "none";
         plantinha.style.display = "none";
         setaRegador.style.display = "none";
         sementeEscolhida = "";
-        
-        // Remove planta final existente
         const plantaExistente = document.getElementById("plantaFinal");
         if (plantaExistente) plantaExistente.remove();
-        
-        // Garantir que todas as sementes estejam visíveis e com o atributo correto
-        const sementes = document.querySelectorAll(".semente");
-        sementes.forEach(semente => {
-            semente.style.display = "inline-block";
-            semente.style.cursor = "pointer";
-            // Verificar se o atributo data-semente existe, senão definir com base no src (fallback)
-            if (!semente.getAttribute("data-semente")) {
-                if (semente.src.includes("milho")) semente.setAttribute("data-semente", "milho");
-                else if (semente.src.includes("tomate")) semente.setAttribute("data-semente", "tomate");
-                else if (semente.src.includes("soja")) semente.setAttribute("data-semente", "soja");
-            }
-        });
-        
-        // Usar delegação de eventos no container das sementes (mais confiável)
-        const sementesContainer = document.getElementById("sementes");
-        if (sementesContainer) {
-            // Remove listeners anteriores para evitar duplicação
-            sementesContainer.removeEventListener("click", clickHandler);
-            sementesContainer.addEventListener("click", clickHandler);
-        }
-        
-        function clickHandler(e) {
-            // Verifica se o clique foi em uma semente ou em um filho dela
-            let target = e.target;
-            while (target && target !== sementesContainer) {
-                if (target.classList && target.classList.contains("semente")) {
-                    if (sementeEscolhida !== "") return; // já escolheu uma
-                    
-                    const tipo = target.getAttribute("data-semente");
-                    if (!tipo) {
-                        console.error("Semente sem tipo:", target);
-                        return;
-                    }
-                    sementeEscolhida = tipo;
-                    console.log("Semente escolhida (delegação):", sementeEscolhida);
-                    
-                    // Esconde todas as sementes
-                    document.querySelectorAll(".semente").forEach(s => s.style.display = "none");
-                    target.style.display = "block";
-                    
-                    alert(`🌱 Você escolheu ${sementeEscolhida}! Agora regue a planta.`);
-                    
-                    regador.style.display = "block";
-                    setaRegador.style.display = "block";
-                    
-                    const handleRegar = function() {
-                        if (!sementeEscolhida) return;
-                        regador.style.display = "none";
-                        setaRegador.style.display = "none";
-                        plantinha.style.display = "block";
-                        setTimeout(() => crescerPlanta(sementeEscolhida), 2000);
-                        regador.removeEventListener("click", handleRegar);
-                    };
-                    regador.addEventListener("click", handleRegar, { once: true });
-                    break;
-                }
-                target = target.parentNode;
-            }
-        }
+        // Garantir que todas as sementes estejam visíveis
+        document.querySelectorAll(".semente").forEach(s => s.style.display = "inline-block");
+        configurarSementes();
     }
 
     function crescerPlanta(tipo) {
         if (plantinha.parentNode) plantinha.remove();
-        
         const plantaFinal = document.createElement("img");
         let src = "";
         if (tipo === "milho") src = "milhocresce.png";
         else if (tipo === "tomate") src = "tomatecresce.png";
-        else if (tipo === "soja") src = "sojacrece.png";
-        else {
-            console.error("Tipo inválido:", tipo);
-            src = "sojacrece.png";
-        }
-        
-        plantaFinal.onerror = function() {
-            console.warn("Imagem não encontrada:", src);
-            this.src = "sojacrece.png";
-        };
+        else src = "sojacrece.png";
+        plantaFinal.onerror = function() { this.src = "sojacrece.png"; };
         plantaFinal.src = src;
         plantaFinal.id = "plantaFinal";
         plantaFinal.style.cssText = "position:absolute; bottom:80px; left:50%; transform:translateX(-50%); width:100px; transition:width 0.1s linear;";
         areaPlantio.appendChild(plantaFinal);
-        
         let tamanho = 100;
         const intervalo = setInterval(() => {
             tamanho += 12;
@@ -585,5 +570,5 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    console.log("✅ Jogo AgroHeróis carregado – abelha a 40%, plantio corrigido com delegação de eventos.");
+    console.log("✅ Jogo AgroHeróis carregado – abelha a 40%, sementes individuais funcionam.");
 });
