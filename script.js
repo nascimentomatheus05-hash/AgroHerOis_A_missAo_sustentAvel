@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", function() {
             emojiBee.style.zIndex = '15';
             emojiBee.style.animation = 'flutuar 0.3s infinite alternate';
             emojiBee.style.pointerEvents = 'none';
-            emojiBee.style.left = (window.innerWidth * 0.3) + 'px';  // 30% horizontal
+            emojiBee.style.left = (window.innerWidth * 0.4) + 'px'; // 40% horizontal
             emojiBee.style.top = (window.innerHeight / 2 - 50) + 'px';
             abelhaImg.style.display = 'none';
             abelhaImg.parentNode.appendChild(emojiBee);
@@ -172,7 +172,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     // =============================================
-    // FASE ABELHA
+    // FASE ABELHA (posição horizontal 40%)
     // =============================================
     let jogoRodando = false;
     let floresColetadas = 0;
@@ -200,8 +200,7 @@ document.addEventListener("DOMContentLoaded", function() {
         floresColetadas = 0;
         vidas = 3;
         posYAbelha = window.innerHeight / 2 - 50;
-        // ABELHA POSICIONADA A 30% DA LARGURA
-        const leftPos = (window.innerWidth * 0.3) + "px";
+        const leftPos = (window.innerWidth * 0.4) + "px"; // 40% horizontal
         setAbelhaLeft(leftPos);
         setAbelhaTop(posYAbelha);
         atualizarHUD();
@@ -309,7 +308,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // =============================================
-    // COMPOSTAGEM
+    // COMPOSTAGEM (drag & drop)
     // =============================================
     const transicaoCompostagem = document.getElementById("transicaoCompostagem");
     const textoCompostagemDiv = document.getElementById("textoCompostagem");
@@ -451,13 +450,11 @@ document.addEventListener("DOMContentLoaded", function() {
     function iniciarPlantioFase() {
         plantioTela.classList.add("ativa");
         
-        // IMPORTANTE: Recriar as sementes para evitar eventos duplicados
-        const containerSementes = document.getElementById("sementes");
-        const sementesOriginais = document.querySelectorAll(".semente");
-        // Remove todas as sementes atuais
-        sementesOriginais.forEach(s => s.remove());
-        // Recriar com base no HTML original (ou em arrays)
-        // Vamos recriar manualmente para garantir que os eventos serão novos
+        // Recriar as sementes para garantir que os eventos sejam novos e todas funcionem
+        const container = document.getElementById("sementes");
+        const sementesExistentes = document.querySelectorAll(".semente");
+        sementesExistentes.forEach(s => s.remove());
+        
         const sementesInfo = [
             { tipo: "milho", src: "sementemilho.png" },
             { tipo: "tomate", src: "sementetomate.png" },
@@ -471,7 +468,7 @@ document.addEventListener("DOMContentLoaded", function() {
             img.style.cursor = "pointer";
             img.style.width = "130px";
             img.style.margin = "10px";
-            containerSementes.appendChild(img);
+            container.appendChild(img);
         });
         
         const novasSementes = document.querySelectorAll(".semente");
@@ -482,7 +479,6 @@ document.addEventListener("DOMContentLoaded", function() {
         const plantaExistente = document.getElementById("plantaFinal");
         if (plantaExistente) plantaExistente.remove();
 
-        // Adicionar eventos de clique para cada semente
         novasSementes.forEach(semente => {
             semente.addEventListener("click", function selecionar() {
                 if (sementeEscolhida) return;
@@ -568,5 +564,5 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    console.log("Jogo carregado - abelha a 30%, compostagem e plantio corrigidos (todas as sementes funcionam).");
+    console.log("Jogo carregado - abelha a 40%, perda de vida apenas em colisão exata, plantio de milho/tomate/soja funcionando.");
 });
