@@ -379,7 +379,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // =============================================
-    // PLANTIO – CORREÇÃO RADICAL (FALLBACK PARA IMAGENS FALTANTES)
+    // PLANTIO – VERSÃO COM BOTÕES (100% FUNCIONAL)
     // =============================================
     const transicaoPlantio = document.getElementById("transicaoPlantio");
     const textoPlantioDiv = document.getElementById("textoPlantio");
@@ -429,74 +429,67 @@ document.addEventListener("DOMContentLoaded", function() {
         iniciarPlantioFase();
     });
 
-    // Função que cria as sementes com fallback de texto caso a imagem não exista
-    function criarSementesComFallback() {
+    // Cria botões de semente (sem depender de imagens)
+    function criarBotoesSementes() {
         const container = document.getElementById("sementes");
         if (!container) return;
         container.innerHTML = ""; // limpa
-        const sementesData = [
-            { tipo: "milho", imagem: "sementemilho.png", label: "🌽 MILHO" },
-            { tipo: "tomate", imagem: "sementetomate.png", label: "🍅 TOMATE" },
-            { tipo: "soja", imagem: "sementesoja.png", label: "🌱 SOJA" }
+        
+        const sementes = [
+            { nome: "milho", label: "🌽 MILHO", cor: "#f9a825", fruto: "milhocresce.png" },
+            { nome: "tomate", label: "🍅 TOMATE", cor: "#e53935", fruto: "tomatecresce.png" },
+            { nome: "soja", label: "🌱 SOJA", cor: "#43a047", fruto: "sojacrece.png" }
         ];
-        sementesData.forEach(s => {
-            const img = document.createElement("img");
-            img.src = s.imagem;
-            img.className = "semente";
-            img.dataset.semente = s.tipo;
-            img.alt = s.label;
-            img.style.cursor = "pointer";
-            img.style.width = "130px";
-            img.style.display = "inline-block";
-            img.style.margin = "10px";
-            // Se a imagem falhar, substitui por um botão de texto
-            img.onerror = function() {
-                const fallback = document.createElement("div");
-                fallback.textContent = s.label;
-                fallback.className = "semente-fallback";
-                fallback.setAttribute("data-semente", s.tipo);
-                fallback.style.cssText = "display:inline-block; width:130px; padding:20px; background:#2f9e44; color:white; border-radius:20px; text-align:center; font-weight:bold; cursor:pointer; margin:10px; font-size:20px;";
-                fallback.addEventListener("click", (e) => {
-                    e.stopPropagation();
-                    if (sementeEscolhida !== "") return;
-                    sementeEscolhida = s.tipo;
-                    processarEscolhaSemente(s.tipo);
-                });
-                img.parentNode.replaceChild(fallback, img);
-            };
-            // Evento de clique na imagem (se carregar)
-            img.addEventListener("click", (e) => {
+        
+        sementes.forEach(s => {
+            const btn = document.createElement("button");
+            btn.textContent = s.label;
+            btn.dataset.semente = s.nome;
+            btn.dataset.fruto = s.fruto;
+            btn.style.cssText = `
+                display: inline-block;
+                margin: 15px;
+                padding: 15px 25px;
+                font-size: 24px;
+                font-weight: bold;
+                background-color: ${s.cor};
+                color: white;
+                border: none;
+                border-radius: 50px;
+                cursor: pointer;
+                transition: transform 0.2s;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+                width: 180px;
+            `;
+            btn.addEventListener("mouseenter", () => btn.style.transform = "scale(1.05)");
+            btn.addEventListener("mouseleave", () => btn.style.transform = "scale(1)");
+            btn.addEventListener("click", (e) => {
                 e.stopPropagation();
                 if (sementeEscolhida !== "") return;
-                sementeEscolhida = img.dataset.semente;
-                processarEscolhaSemente(sementeEscolhida);
+                sementeEscolhida = s.nome;
+                // Esconde todos os botões
+                document.querySelectorAll("#sementes button").forEach(b => b.style.display = "none");
+                alert(`🌱 Você escolheu ${s.label}! Agora regue a planta.`);
+                regador.style.display = "block";
+                setaRegador.style.display = "block";
+                // Remove evento anterior do regador
+                if (regador._regarHandler) regador.removeEventListener("click", regador._regarHandler);
+                const regarHandler = function() {
+                    regador.style.display = "none";
+                    setaRegador.style.display = "none";
+                    plantinha.style.display = "block";
+                    setTimeout(() => crescerPlanta(s.nome, s.fruto), 2000);
+                };
+                regador.addEventListener("click", regarHandler);
+                regador._regarHandler = regarHandler;
             });
-            container.appendChild(img);
+            container.appendChild(btn);
         });
-    }
-
-    function processarEscolhaSemente(tipo) {
-        console.log("Semente escolhida:", tipo);
-        // Esconde todas as sementes (tanto imagens quanto fallbacks)
-        document.querySelectorAll("#sementes .semente, #sementes .semente-fallback").forEach(el => el.style.display = "none");
-        alert(`🌱 Você escolheu ${tipo}! Agora regue a planta.`);
-        regador.style.display = "block";
-        setaRegador.style.display = "block";
-        // Remove evento anterior do regador e adiciona novo
-        if (regador._regarHandler) regador.removeEventListener("click", regador._regarHandler);
-        const regarHandler = function() {
-            regador.style.display = "none";
-            setaRegador.style.display = "none";
-            plantinha.style.display = "block";
-            setTimeout(() => crescerPlanta(tipo), 2000);
-        };
-        regador.addEventListener("click", regarHandler);
-        regador._regarHandler = regarHandler;
     }
 
     function iniciarPlantioFase() {
         plantioTela.classList.add("ativa");
-        console.log("🌱 Iniciando fase plantio");
+        console.log("🌱 Iniciando fase plantio com botões");
         // Reset
         regador.style.display = "none";
         plantinha.style.display = "none";
@@ -504,19 +497,15 @@ document.addEventListener("DOMContentLoaded", function() {
         sementeEscolhida = "";
         const plantaExistente = document.getElementById("plantaFinal");
         if (plantaExistente) plantaExistente.remove();
-        // Recria as sementes com fallback
-        criarSementesComFallback();
+        // Cria os botões
+        criarBotoesSementes();
     }
 
-    function crescerPlanta(tipo) {
+    function crescerPlanta(tipo, frutoImg) {
         if (plantinha.parentNode) plantinha.remove();
         const plantaFinal = document.createElement("img");
-        let src = "";
-        if (tipo === "milho") src = "milhocresce.png";
-        else if (tipo === "tomate") src = "tomatecresce.png";
-        else src = "sojacrece.png";
+        plantaFinal.src = frutoImg;
         plantaFinal.onerror = function() { this.src = "sojacrece.png"; };
-        plantaFinal.src = src;
         plantaFinal.id = "plantaFinal";
         plantaFinal.style.cssText = "position:absolute; bottom:80px; left:50%; transform:translateX(-50%); width:100px; transition:width 0.1s linear;";
         areaPlantio.appendChild(plantaFinal);
@@ -565,5 +554,5 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    console.log("✅ Jogo carregado – abelha a 40%, todas as sementes funcionando (com fallback de texto).");
+    console.log("✅ Jogo carregado – abelha a 40%, plantio com botões funcionando 100%.");
 });
