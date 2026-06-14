@@ -39,7 +39,6 @@ document.addEventListener("DOMContentLoaded", function() {
             emojiBee.id = 'abelha-emoji';
             emojiBee.textContent = '🐝';
             emojiBee.style.cssText = 'position:absolute; font-size:80px; width:auto; height:auto; z-index:15; animation:flutuar 0.3s infinite alternate; pointer-events:none;';
-            // ALTERADO: 30% em vez de 40%
             emojiBee.style.left = (window.innerWidth * 0.3) + 'px';
             emojiBee.style.top = (window.innerHeight / 2 - 50) + 'px';
             abelhaImg.style.display = 'none';
@@ -203,7 +202,6 @@ document.addEventListener("DOMContentLoaded", function() {
         vitoria = false;
         velocidadeAtual = 2.8;
         posYAbelha = window.innerHeight / 2 - 50;
-        // ALTERADO: 30% em vez de 40%
         const leftPos = (window.innerWidth * 0.3) + "px";
         setAbelhaLeft(leftPos);
         setAbelhaTop(posYAbelha);
@@ -226,7 +224,7 @@ document.addEventListener("DOMContentLoaded", function() {
             const tiposFlor = ["flor.png", "milho.png", "soja.png"];
             objeto.src = tiposFlor[Math.floor(Math.random() * 3)];
             objeto.dataset.tipo = "flor";
-        } else if (rand === 1) {
+        } else if (rand === 2) {
             objeto.src = "fogo.png";
             objeto.dataset.tipo = "fogo";
         } else {
@@ -412,7 +410,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // =============================================
-    // PLANTIO – NOVA VERSÃO SIMPLIFICADA
+    // PLANTIO – SEMENTES CLICÁVEIS
     // =============================================
     const transicaoPlantio = document.getElementById("transicaoPlantio");
     const textoPlantioDiv = document.getElementById("textoPlantio");
@@ -462,7 +460,6 @@ document.addEventListener("DOMContentLoaded", function() {
         iniciarPlantioFase();
     });
 
-    // Função configurarSementes completamente reescrita (onclick direto)
     function configurarSementes() {
         const sementes = document.querySelectorAll(".semente");
         sementes.forEach(semente => {
@@ -506,13 +503,6 @@ document.addEventListener("DOMContentLoaded", function() {
         // Garantir que todas as sementes estejam visíveis
         document.querySelectorAll(".semente").forEach(s => s.style.display = "inline-block");
         configurarSementes();
-
-        // TESTE ADICIONAL: log de clique para cada semente (ajuda na depuração)
-        document.querySelectorAll(".semente").forEach(s => {
-            s.addEventListener("click", () => {
-                console.log("CLICOU:", s.dataset.semente);
-            });
-        });
     }
 
     function crescerPlanta(tipo) {
