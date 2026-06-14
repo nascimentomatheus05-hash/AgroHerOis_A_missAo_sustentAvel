@@ -149,7 +149,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     // =============================================
-    // FASE ABELHA (com correções e aceleração)
+    // FASE ABELHA (corrigida)
     // =============================================
     let jogoRodando = false;
     let floresColetadas = 0;
@@ -157,9 +157,9 @@ document.addEventListener("DOMContentLoaded", function() {
     let posYAbelha = 300;
     let intervaloObjetos;
     let animacaoLoop;
-    let velocidadeAtual = 2.8;      // velocidade inicial
-    let acelerou = false;           // já acelerou?
-    let vitoria = false;            // impede múltiplas vitórias
+    let velocidadeAtual = 2.8;
+    let acelerou = false;
+    let vitoria = false;
 
     const faseAbelha = document.getElementById("faseAbelha");
     const objetosJogo = document.getElementById("objetosJogo");
@@ -184,7 +184,6 @@ document.addEventListener("DOMContentLoaded", function() {
         vitoria = false;
         velocidadeAtual = 2.8;
         posYAbelha = window.innerHeight / 2 - 50;
-        // Abelha mais à frente: 30% da largura
         const leftPos = (window.innerWidth * 0.4) + "px";
         setAbelhaLeft(leftPos);
         setAbelhaTop(posYAbelha);
@@ -207,7 +206,7 @@ document.addEventListener("DOMContentLoaded", function() {
             const tiposFlor = ["flor.png", "milho.png", "soja.png"];
             objeto.src = tiposFlor[Math.floor(Math.random() * 3)];
             objeto.dataset.tipo = "flor";
-        } else if (rand === 1) {
+        } else if (rand === 2) {
             objeto.src = "fogo.png";
             objeto.dataset.tipo = "fogo";
         } else {
@@ -251,19 +250,16 @@ document.addEventListener("DOMContentLoaded", function() {
                     floresColetadas++;
                     atualizarHUD();
                     obj.remove();
-                    // Aceleração após 5 flores (apenas uma vez)
                     if (floresColetadas >= 5 && !acelerou) {
                         acelerou = true;
                         velocidadeAtual = 4.2;
                         console.log("🚀 Acelerou! Velocidade agora:", velocidadeAtual);
                     }
-                    // Vitória ao coletar 10 flores
                     if (floresColetadas >= 10 && !vitoria) {
                         vitoria = true;
                         vencerFaseAbelha();
                     }
                 } else {
-                    // Obstáculo: só perde vida se ainda não tiver sido atingido por este objeto
                     if (!obj.dataset.hit) {
                         obj.dataset.hit = "true";
                         vidas--;
@@ -396,7 +392,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // =============================================
-    // PLANTIO (todas as sementes funcionam)
+    // PLANTIO CORRIGIDO – todas as sementes funcionam
     // =============================================
     const transicaoPlantio = document.getElementById("transicaoPlantio");
     const textoPlantioDiv = document.getElementById("textoPlantio");
@@ -446,58 +442,99 @@ document.addEventListener("DOMContentLoaded", function() {
         iniciarPlantioFase();
     });
 
+    // Função que realmente inicia a fase de plantio – versão corrigida
     function iniciarPlantioFase() {
         plantioTela.classList.add("ativa");
-        // Recriar sementes para evitar eventos duplicados
-        const sementesOriginais = document.querySelectorAll(".semente");
-        sementesOriginais.forEach(s => {
-            const clone = s.cloneNode(true);
-            s.parentNode.replaceChild(clone, s);
-        });
-        const novasSementes = document.querySelectorAll(".semente");
+
+        // Obtém o container das sementes e suas imagens diretamente (sem clonagem desnecessária)
+        const containerSementes = document.getElementById("sementes");
+        // Garante que todas as sementes estão visíveis e com seus atributos originais
+        const sementes = document.querySelectorAll(".semente");
+        
+        // Reseta o estado
         regador.style.display = "none";
         plantinha.style.display = "none";
         setaRegador.style.display = "none";
         sementeEscolhida = "";
+        
+        // Remove qualquer planta final residual
         const plantaExistente = document.getElementById("plantaFinal");
         if (plantaExistente) plantaExistente.remove();
-
+        
+        // Remove todos os listeners antigos das sementes (para evitar duplicação)
+        // Para isso, clonamos cada semente e substituímos, assim perdemos os listeners antigos
+        sementes.forEach(semente => {
+            const novaSemente = semente.cloneNode(true);
+            semente.parentNode.replaceChild(novaSemente, semente);
+        });
+        
+        // Seleciona as novas sementes (agora sem listeners)
+        const novasSementes = document.querySelectorAll(".semente");
+        
+        // Adiciona evento de clique para cada semente individualmente
         novasSementes.forEach(semente => {
-            semente.addEventListener("click", function selecionar(e) {
+            semente.addEventListener("click", function(e) {
                 e.stopPropagation();
-                if (sementeEscolhida) return;
-                sementeEscolhida = this.dataset.semente;
+                // Impede que selecione outra semente depois de já ter escolhido uma
+                if (sementeEscolhida !== "") return;
+                
+                // Obtém o tipo da semente pelo atributo data-semente
+                const tipo = this.getAttribute("data-semente");
+                if (!tipo) {
+                    console.error("Semente sem atributo data-semente:", this);
+                    return;
+                }
+                sementeEscolhida = tipo;
+                console.log("Semente escolhida:", sementeEscolhida);
+                
+                // Esconde todas as sementes (opcional, mas mantém a escolhida visível)
                 novasSementes.forEach(s => s.style.display = "none");
                 this.style.display = "block";
+                
                 alert(`🌱 Você escolheu ${sementeEscolhida}! Agora regue a planta.`);
+                
+                // Mostra o regador e a seta
                 regador.style.display = "block";
                 setaRegador.style.display = "block";
-                // Recriar regador para evento único
-                const novoRegador = regador.cloneNode(true);
-                regador.parentNode.replaceChild(novoRegador, regador);
-                const novoRegadorElem = document.getElementById("regador");
-                novoRegadorElem.addEventListener("click", function regar() {
+                
+                // Cria um evento de clique no regador (apenas uma vez)
+                const handleRegar = function() {
                     if (!sementeEscolhida) return;
-                    novoRegadorElem.style.display = "none";
+                    regador.style.display = "none";
                     setaRegador.style.display = "none";
                     plantinha.style.display = "block";
                     setTimeout(() => crescerPlanta(sementeEscolhida), 2000);
-                }, { once: true });
+                    regador.removeEventListener("click", handleRegar);
+                };
+                regador.addEventListener("click", handleRegar, { once: true });
             });
         });
     }
 
     function crescerPlanta(tipo) {
-        plantinha.remove();
+        // Remove a plantinha temporária
+        if (plantinha.parentNode) plantinha.remove();
+        
         const plantaFinal = document.createElement("img");
         let src = "";
         if (tipo === "milho") src = "milhocresce.png";
         else if (tipo === "tomate") src = "tomatecresce.png";
-        else src = "sojacrece.png";
+        else if (tipo === "soja") src = "sojacrece.png";
+        else {
+            console.error("Tipo de semente inválido:", tipo);
+            src = "sojacrece.png"; // fallback
+        }
+        
+        // Fallback caso a imagem não exista
+        plantaFinal.onerror = function() {
+            console.warn("Imagem não encontrada:", src);
+            this.src = "sojacrece.png";
+        };
         plantaFinal.src = src;
         plantaFinal.id = "plantaFinal";
         plantaFinal.style.cssText = "position:absolute; bottom:80px; left:50%; transform:translateX(-50%); width:100px; transition:width 0.1s linear;";
         areaPlantio.appendChild(plantaFinal);
+        
         let tamanho = 100;
         const intervalo = setInterval(() => {
             tamanho += 12;
@@ -544,5 +581,5 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    console.log("✅ Jogo AgroHeróis carregado – correções: vidas só perde em colisão real, aceleração após 5 flores, abelha a 30%.");
+    console.log("✅ Jogo AgroHeróis carregado – plantio corrigido (todas as sementes funcionam)");
 });
