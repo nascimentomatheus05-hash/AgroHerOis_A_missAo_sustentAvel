@@ -5,14 +5,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const botaoMusica = document.getElementById("btnMusica");
     const audio = document.getElementById("musicaFundo");
     let musicaTocando = false;
-
     if (botaoMusica && audio) {
-        audio.addEventListener("canplaythrough", () => console.log("✅ Música carregada."));
-        audio.addEventListener("error", () => {
-            console.error("❌ Erro ao carregar musica.mp3");
-            botaoMusica.disabled = true;
-            botaoMusica.style.opacity = "0.5";
-        });
         audio.load();
         botaoMusica.addEventListener("click", function() {
             if (musicaTocando) {
@@ -29,46 +22,65 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // =============================================
-    // FALLBACK DA ABELHA
+    // ABELHA POSICIONADA A 40% DA LARGURA
     // =============================================
     const abelhaImg = document.getElementById('abelha');
     let abelhaElement = abelhaImg;
+
+    function posicionarAbelhaHorizontal() {
+        if (!abelhaElement) return;
+        if (abelhaElement.id === 'abelha-emoji') {
+            // Fallback emoji: centraliza no ponto 40% da largura
+            abelhaElement.style.left = '40%';
+            abelhaElement.style.transform = 'translateX(-40%)';
+        } else {
+            const largura = abelhaElement.offsetWidth;
+            // Posição = 40% da largura da tela - metade da largura da imagem
+            let posX = (window.innerWidth * 0.4) - (largura / 2);
+            posX = Math.max(0, Math.min(posX, window.innerWidth - largura));
+            abelhaElement.style.left = posX + 'px';
+            abelhaElement.style.transform = 'none'; // remove qualquer transform
+        }
+    }
+
+    function setAbelhaTop(top) {
+        if (abelhaElement) abelhaElement.style.top = top + "px";
+    }
+
+    // Fallback: se a imagem a.png não existir
     if (abelhaImg) {
         abelhaImg.onerror = function() {
             const emojiBee = document.createElement('div');
             emojiBee.id = 'abelha-emoji';
             emojiBee.textContent = '🐝';
-            emojiBee.style.cssText = 'position:absolute; font-size:80px; width:auto; height:auto; z-index:15; animation:flutuar 0.3s infinite alternate; pointer-events:none;';
-            emojiBee.style.left = '50%';
-            emojiBee.style.transform = 'translateX(-50%)';
+            emojiBee.style.cssText = 'position:absolute; font-size:80px; z-index:15; animation:flutuar 0.3s infinite alternate; pointer-events:none;';
+            emojiBee.style.left = '40%';
+            emojiBee.style.transform = 'translateX(-40%)';
             emojiBee.style.top = (window.innerHeight / 2 - 50) + 'px';
             abelhaImg.style.display = 'none';
             abelhaImg.parentNode.appendChild(emojiBee);
             abelhaElement = emojiBee;
             window.abelhaElement = emojiBee;
+            posicionarAbelhaHorizontal();
         };
         abelhaImg.onload = function() {
             window.abelhaElement = abelhaImg;
             abelhaElement = abelhaImg;
+            posicionarAbelhaHorizontal();
         };
         if (abelhaImg.complete) {
             window.abelhaElement = abelhaImg;
             abelhaElement = abelhaImg;
+            posicionarAbelhaHorizontal();
         }
     }
 
-    // Remove fundo branco
-    document.querySelectorAll('.adelita, .adelita-final').forEach(el => {
-        if (el) el.style.mixBlendMode = 'multiply';
-    });
-
     // =============================================
-    // TELA INICIAL
+    // TELA INICIAL E INTRODUÇÃO
     // =============================================
     const telaInicial = document.getElementById("telaInicial");
     const introducao = document.getElementById("introducao");
     const btnComecar = document.getElementById("btnComecar");
-
     if (btnComecar && telaInicial && introducao) {
         btnComecar.addEventListener("click", function() {
             telaInicial.classList.remove("ativa");
@@ -77,11 +89,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // =============================================
-    // DIÁLOGOS INTRODUÇÃO
-    // =============================================
     let nomeJogador = "", personagemEscolhido = "", falaAtual = 0;
-
     const falas = [
         "Olá! Eu sou a Adelita e faço parte dos AgroHeróis!\n\nQual é o seu nome?",
         "Que nome lindo, [NOME]!\n\nHoje você vai participar de uma missão muito importante.\n\nEscolha seu personagem.",
@@ -96,7 +104,6 @@ document.addEventListener("DOMContentLoaded", function() {
         "Quando você coletar 10 flores, ajudará a natureza e mostrará como a polinização é essencial para um Agro Forte e um Futuro Sustentável.",
         "Clique para começar sua missão."
     ];
-
     const textoDialogo = document.getElementById("textoDialogo");
     const entradaNomeDiv = document.getElementById("entradaNome");
     const escolhaPersonagemDiv = document.getElementById("escolhaPersonagem");
@@ -120,7 +127,6 @@ document.addEventListener("DOMContentLoaded", function() {
             escolhaPersonagemDiv.style.display = "none";
         }
     }
-
     btnProximo.addEventListener("click", function() {
         if (falaAtual === 0) {
             nomeJogador = nomeInput.value.trim();
@@ -137,7 +143,6 @@ document.addEventListener("DOMContentLoaded", function() {
             iniciarFaseAbelha();
         }
     });
-
     menina.addEventListener("click", function() {
         personagemEscolhido = "menina";
         menina.style.border = "4px solid green";
@@ -150,18 +155,10 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     // =============================================
-    // FASE ABELHA – CENTRALIZADA
+    // FASE ABELHA – POSIÇÃO FIXA EM 40% DA LARGURA
     // =============================================
-    let jogoRodando = false;
-    let floresColetadas = 0;
-    let vidas = 3;
-    let posYAbelha = 300;
-    let intervaloObjetos;
-    let animacaoLoop;
-    let velocidadeAtual = 2.8;
-    let acelerou = false;
-    let vitoria = false;
-
+    let jogoRodando = false, floresColetadas = 0, vidas = 3, posYAbelha = 300;
+    let intervaloObjetos, animacaoLoop, velocidadeAtual = 2.8, acelerou = false, vitoria = false;
     const faseAbelha = document.getElementById("faseAbelha");
     const objetosJogo = document.getElementById("objetosJogo");
     const contadorFloresSpan = document.getElementById("contadorFlores");
@@ -169,31 +166,9 @@ document.addEventListener("DOMContentLoaded", function() {
     const sucessoAbelha = document.getElementById("sucessoAbelha");
     const msgSucesso = document.getElementById("msgSucesso");
 
-    function setAbelhaTop(top) {
-        if (abelhaElement) abelhaElement.style.top = top + "px";
-    }
-    
-    // Centraliza a abelha horizontalmente
-    function centralizarAbelha() {
-        if (!abelhaElement) return;
-        const larguraAbelha = abelhaElement.offsetWidth;
-        const centroX = (window.innerWidth - larguraAbelha) / 2;
-        abelhaElement.style.left = centroX + "px";
-        // Se for emoji, ajustar transform
-        if (abelhaElement.id === 'abelha-emoji') {
-            abelhaElement.style.left = '50%';
-            abelhaElement.style.transform = 'translateX(-50%)';
-        }
-    }
-
-    function atualizarPosicaoAbelha() {
-        if (!abelhaElement) return;
-        centralizarAbelha();
-    }
-
     window.addEventListener("resize", function() {
         if (faseAbelha.classList.contains("ativa") && jogoRodando) {
-            centralizarAbelha();
+            posicionarAbelhaHorizontal();
             posYAbelha = Math.min(window.innerHeight - 80, Math.max(20, posYAbelha));
             setAbelhaTop(posYAbelha);
         }
@@ -208,7 +183,7 @@ document.addEventListener("DOMContentLoaded", function() {
         vitoria = false;
         velocidadeAtual = 2.8;
         posYAbelha = window.innerHeight / 2 - 50;
-        centralizarAbelha();
+        posicionarAbelhaHorizontal();
         setAbelhaTop(posYAbelha);
         atualizarHUD();
         if (intervaloObjetos) clearInterval(intervaloObjetos);
@@ -276,7 +251,6 @@ document.addEventListener("DOMContentLoaded", function() {
                     if (floresColetadas >= 5 && !acelerou) {
                         acelerou = true;
                         velocidadeAtual = 4.2;
-                        console.log("🚀 Acelerou! Velocidade agora:", velocidadeAtual);
                     }
                     if (floresColetadas >= 10 && !vitoria) {
                         vitoria = true;
@@ -326,7 +300,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // =============================================
-    // COMPOSTAGEM
+    // COMPOSTAGEM (mantido igual)
     // =============================================
     const transicaoCompostagem = document.getElementById("transicaoCompostagem");
     const textoCompostagemDiv = document.getElementById("textoCompostagem");
@@ -334,7 +308,6 @@ document.addEventListener("DOMContentLoaded", function() {
     const btnIniciarCompostagem = document.getElementById("btnIniciarCompostagem");
     const compostagemTela = document.getElementById("compostagemTela");
     const contadorCompostagemSpan = document.getElementById("contadorCompostagem");
-
     const falasCompostagem = [
         "Muito bem, [NOME]!\n\nAgora vamos aprender sobre a compostagem.\nA compostagem transforma restos de alimentos e folhas em adubo natural, ajudando as plantas a crescerem fortes e saudáveis.",
         "Sua missão: arraste os materiais corretos para a composteira.\n✅ Pode colocar: cascas de frutas, cascas de legumes, folhas secas.",
@@ -350,7 +323,6 @@ document.addEventListener("DOMContentLoaded", function() {
         btnProxFalaCompostagem.style.display = "block";
         btnIniciarCompostagem.style.display = "none";
     }
-
     function mostrarFalaCompostagem() {
         let txt = falasCompostagem[falaCompAtual].replace("[NOME]", nomeJogador);
         textoCompostagemDiv.innerText = txt;
@@ -362,7 +334,6 @@ document.addEventListener("DOMContentLoaded", function() {
             btnIniciarCompostagem.style.display = "none";
         }
     }
-
     btnProxFalaCompostagem.addEventListener("click", function() {
         if (falaCompAtual < falasCompostagem.length - 1) {
             falaCompAtual++;
@@ -374,7 +345,7 @@ document.addEventListener("DOMContentLoaded", function() {
         iniciarCompostagem();
     });
 
-    let acertosCompostagem = 0;
+    let acertosCompostagem = 0, dragSrc = null;
     function iniciarCompostagem() {
         compostagemTela.classList.add("ativa");
         acertosCompostagem = 0;
@@ -382,40 +353,36 @@ document.addEventListener("DOMContentLoaded", function() {
         document.querySelectorAll("#itensCompostagem .item").forEach(item => {
             item.setAttribute("draggable", "true");
             item.style.display = "inline-block";
-            item.addEventListener("dragstart", dragStart);
+            item.addEventListener("dragstart", e => {
+                dragSrc = e.target;
+                e.dataTransfer.setData("text/plain", e.target.src);
+            });
         });
         const composteira = document.getElementById("composteira");
         composteira.addEventListener("dragover", e => e.preventDefault());
-        composteira.addEventListener("drop", dropNaComposteira);
-    }
-
-    let dragSrc = null;
-    function dragStart(e) {
-        dragSrc = e.target;
-        e.dataTransfer.setData("text/plain", e.target.src);
-    }
-    function dropNaComposteira(e) {
-        e.preventDefault();
-        const item = dragSrc;
-        if (!item) return;
-        const isCorreto = item.getAttribute("data-correto") === "true";
-        if (isCorreto) {
-            acertosCompostagem++;
-            contadorCompostagemSpan.innerText = `Acertos: ${acertosCompostagem} / 4`;
-            item.style.display = "none";
-            if (acertosCompostagem >= 4) {
-                alert(`Parabéns ${nomeJogador}! Você produziu adubo natural!`);
-                compostagemTela.classList.remove("ativa");
-                iniciarDialogosPlantio();
+        composteira.addEventListener("drop", e => {
+            e.preventDefault();
+            const item = dragSrc;
+            if (!item) return;
+            const isCorreto = item.getAttribute("data-correto") === "true";
+            if (isCorreto) {
+                acertosCompostagem++;
+                contadorCompostagemSpan.innerText = `Acertos: ${acertosCompostagem} / 4`;
+                item.style.display = "none";
+                if (acertosCompostagem >= 4) {
+                    alert(`Parabéns ${nomeJogador}! Você produziu adubo natural!`);
+                    compostagemTela.classList.remove("ativa");
+                    iniciarDialogosPlantio();
+                }
+            } else {
+                alert("❌ Esse material NÃO deve ir para a composteira!");
             }
-        } else {
-            alert("❌ Esse material NÃO deve ir para a composteira!");
-        }
-        dragSrc = null;
+            dragSrc = null;
+        });
     }
 
     // =============================================
-    // PLANTIO – SEMENTES FUNCIONANDO
+    // PLANTIO – SEMENTES CLICÁVEIS
     // =============================================
     const transicaoPlantio = document.getElementById("transicaoPlantio");
     const textoPlantioDiv = document.getElementById("textoPlantio");
@@ -468,56 +435,40 @@ document.addEventListener("DOMContentLoaded", function() {
     function configurarSementes() {
         const sementes = document.querySelectorAll(".semente");
         sementes.forEach(semente => {
-            // Remove qualquer evento anterior para evitar duplicação
-            semente.removeEventListener("click", semente.clickHandler);
-            // Define o novo handler
+            semente.removeEventListener("click", semente._handler);
             const handler = function() {
-                if (sementeEscolhida !== "") return; // já escolheu
+                if (sementeEscolhida !== "") return;
                 const tipo = this.dataset.semente;
-                if (!tipo) {
-                    console.error("Erro: data-semente não encontrada");
-                    return;
-                }
+                if (!tipo) return;
                 sementeEscolhida = tipo;
-                console.log("Semente escolhida:", sementeEscolhida);
-                // Esconde todas as sementes
                 document.querySelectorAll(".semente").forEach(s => s.style.display = "none");
-                // Mostra a escolhida (opcional)
                 this.style.display = "block";
                 alert(`🌱 Você escolheu ${sementeEscolhida}! Agora regue a planta.`);
-                // Mostra regador e seta
                 regador.style.display = "block";
                 setaRegador.style.display = "block";
-                
-                // Define evento de regar (substitui o anterior)
+                if (regador._regarHandler) regador.removeEventListener("click", regador._regarHandler);
                 const regarHandler = function() {
                     regador.style.display = "none";
                     setaRegador.style.display = "none";
                     plantinha.style.display = "block";
-                    setTimeout(() => {
-                        crescerPlanta(sementeEscolhida);
-                    }, 2000);
+                    setTimeout(() => crescerPlanta(sementeEscolhida), 2000);
                 };
-                // Remove evento antigo e adiciona novo
-                regador.removeEventListener("click", regador.clickHandler);
                 regador.addEventListener("click", regarHandler);
-                regador.clickHandler = regarHandler;
+                regador._regarHandler = regarHandler;
             };
             semente.addEventListener("click", handler);
-            semente.clickHandler = handler;
+            semente._handler = handler;
         });
     }
 
     function iniciarPlantioFase() {
         plantioTela.classList.add("ativa");
-        // Resetar estado
         regador.style.display = "none";
         plantinha.style.display = "none";
         setaRegador.style.display = "none";
         sementeEscolhida = "";
         const plantaExistente = document.getElementById("plantaFinal");
         if (plantaExistente) plantaExistente.remove();
-        // Garantir que todas as sementes estejam visíveis
         document.querySelectorAll(".semente").forEach(s => s.style.display = "inline-block");
         configurarSementes();
     }
@@ -556,7 +507,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // =============================================
-    // CERTIFICADO
+    // CERTIFICADO E PDF
     // =============================================
     const btnCertificado = document.getElementById("btnCertificado");
     const certificadoTela = document.getElementById("certificadoTela");
@@ -568,7 +519,6 @@ document.addEventListener("DOMContentLoaded", function() {
             nomeCertificadoSpan.innerText = nomeJogador;
         });
     }
-
     const btnPDF = document.getElementById("baixarPDF");
     if (btnPDF) {
         btnPDF.addEventListener("click", function() {
@@ -580,5 +530,5 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    console.log("✅ Jogo AgroHeróis carregado – abelha centralizada, sementes 100% funcionais.");
+    console.log("✅ Jogo carregado – abelha posicionada a 40% da largura, sementes clicáveis.");
 });
