@@ -28,7 +28,6 @@ Ao final, o jogador recebe um **certificado personalizado** com seu nome, podend
 - ✅ **Logos animadas** na tela inicial com efeito de pulsar e brilho
 - ✅ **Design responsivo** (funciona em telas de até 900px)
 - ✅ **Fallback da abelha** – caso a imagem `a.png` não seja encontrada, um emoji 🐝 assume seu lugar
-- ✅ **Remoção do fundo branco** da personagem principal via CSS (`mix-blend-mode`)
 
 ---
 
@@ -73,11 +72,17 @@ Este jogo foi realizado com **sonho, carinho e atenção** – cada detalhe foi 
 
 - À minha **família**: minha mãe **Sandra de Souza Nascimento**, meu pai **Luscimarque**, por todo amor, incentivo e apoio incondicional.
 - A **Deus**, pela força e sabedoria durante toda a jornada.
+- À minha orientadora, **Professora Mestra Patrícia Ariadny Ferro**, pela paciência, ensinamentos, auxílio nos códigos e por acreditar no projeto.
 - Ao **Colégio Estadual Antonio Tortato** (Paranacity), na pessoa do diretor **Felipe Nitsche** e da pedagoga **Gabriela**, pelo ambiente acolhedor e oportunidades.
-- À minha orientadora, **Professora Mestra Patrícia Ariadny Ferro**, pela paciência, ensinamentos e por acreditar no projeto.
 - Ao **Sistema FAEP** (Federação da Agricultura do Estado do Paraná) e ao **SENAR** (Serviço Nacional de Aprendizagem Rural), pelo apoio à educação no campo.
 - À **SEED** (Secretaria de Estado da Educação do Paraná) e à **NRE de Paranavaí**, pelo suporte à inovação pedagógica.
 - Ao **embaixador da programação Fernando Masut**, pela inspiração e incentivo à tecnologia.
+- À **Alura**, pelo curso de formação que contribuiu para o meu aprendizado em programação.
+- Ao **Gemini (Google)**, pela assistência com a geração de textos, correções e ideias criativas.
+- Ao **ChatGPT (OpenAI)**, pela criação das **imagens** (`prompt` gerado por mim e executado pelo ChatGPT).
+- Aos criadores da **letra da música** de fundo (autoria própria) – a canção foi composta especialmente para este projeto.
+- Ao programa **Agrinho**, pelo conteúdo estudado que inspirou toda a temática ambiental e agrícola do jogo.
+- A todas as **pesquisas** realizadas sobre polinização, compostagem e sustentabilidade, que embasaram o conteúdo educativo.
 
 Sem vocês, este sonho não seria possível. Muito obrigado!
 
@@ -87,7 +92,12 @@ Sem vocês, este sonho não seria possível. Muito obrigado!
 
 - **Desenvolvedor:** Matheus Souza Nascimento – aluno do 2º ano D – Noturno  
   Colégio Estadual Antonio Tortato – Paranacity
-- **Orientadora:** Professora Mestra Patrícia Ariadny Ferro
+- **Orientadora:** Professora Mestra Patrícia Ariadny Ferro (auxílio nos códigos e orientação pedagógica)
+- **Imagens:** Geradas com auxílio do ChatGPT (prompts do desenvolvedor)
+- **Textos e ajustes:** Gerados com auxílio do Gemini
+- **Música de fundo:** Autoria própria, com curso de som realizado na Alura
+- **Efeitos sonoros:** Criados com Web Audio API (sintetizados)
+- **Conteúdo educativo:** Baseado no programa Agrinho e em pesquisas independentes
 - **Apoio Institucional:** Colégio Estadual Antonio Tortato, NRE Paranavaí, SEED, FAEP, SENAR
 
 ---
@@ -96,10 +106,7 @@ Sem vocês, este sonho não seria possível. Muito obrigado!
 
 Este projeto está sob a licença **MIT** – consulte o arquivo [LICENSE](LICENSE) para mais detalhes.
 
-
 ---
 
 > **Agro Forte, Futuro Sustentável – Equilíbrio entre Produção e Meio Ambiente.** 🌍🌾  
 > *Com sonho, carinho e atenção – para um amanhã mais sustentável.*
-
-
