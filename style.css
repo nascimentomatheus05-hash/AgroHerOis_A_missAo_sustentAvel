@@ -85,7 +85,7 @@ body {
     100% { transform: scale(1); filter: drop-shadow(0 0 2px gold); }
 }
 
-/* LOGOS OUTRAS TELAS (exceto tela final) */
+/* LOGOS OUTRAS TELAS (padrão) */
 .logos {
     position: absolute;
     top: 15px;
@@ -96,6 +96,23 @@ body {
 }
 .logos img {
     height: 100px;
+    filter: drop-shadow(2px 2px 5px rgba(0,0,0,0.3));
+}
+
+/* TELA FINAL - logos centralizadas no topo, maiores */
+#telaFinal .logos {
+    position: absolute;
+    top: 20px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    z-index: 10;
+}
+#telaFinal .logos img {
+    height: 180px;
+    width: auto;
     filter: drop-shadow(2px 2px 5px rgba(0,0,0,0.3));
 }
 
@@ -163,7 +180,7 @@ body {
     z-index: 30;
 }
 
-/* PERSONAGENS */
+/* PERSONAGENS - sem mix-blend-mode */
 .adelita {
     position: absolute;
     left: 30px;
@@ -180,25 +197,6 @@ body {
     height: 480px;
     filter: drop-shadow(5px 5px 10px rgba(0,0,0,0.3));
 }
-
-/* TELA FINAL - LOGO CENTRALIZADA GRANDE */
-#logoCentralFinal {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 15;
-    text-align: center;
-    pointer-events: none; /* permite clicar nos botões por baixo */
-}
-#logoCentralFinal img {
-    width: 400px;
-    max-width: 60vw;
-    filter: drop-shadow(0 0 20px rgba(0,0,0,0.3));
-    animation: pulsarBrilho 2s infinite;
-}
-
-/* Ajuste para o galeria-final ficar no canto direito, maior */
 .final-personagens {
     position: absolute;
     bottom: 20px;
@@ -211,8 +209,7 @@ body {
     z-index: 5;
 }
 .galeria-final {
-    height: 550px; /* maior que antes */
-    margin-right: 0;
+    margin-left: auto;
 }
 
 /* CAIXA DE DIÁLOGO */
@@ -301,14 +298,16 @@ body {
     transition: left 0.05s linear;
 }
 
-/* COMPOSTAGEM - aproximando a composteira dos itens */
+/* COMPOSTAGEM - centralizada */
 #composteiraArea {
     position: absolute;
-    right: 20px;
-    bottom: 150px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
 }
 #composteira {
-    width: 300px;
+    width: 400px;
 }
 #itensCompostagem {
     position: absolute;
@@ -317,10 +316,11 @@ body {
     display: flex;
     gap: 20px;
     flex-wrap: wrap;
-    width: 600px;
+    width: 650px;
     background: rgba(255,255,240,0.8);
     padding: 15px;
     border-radius: 30px;
+    z-index: 10;
 }
 .item {
     width: 100px;
@@ -336,9 +336,13 @@ body {
     border-radius: 40px;
     font-size: 24px;
     font-weight: bold;
+    z-index: 10;
 }
 
-/* PLANTIO - (as sementes serão posicionadas pelo JS) */
+/* PLANTIO */
+#sementes {
+    /* o JavaScript define position:fixed */
+}
 #areaPlantio {
     position: relative;
     width: 100%;
@@ -419,10 +423,9 @@ body {
     .caixaDialogo { left: 20px; width: 90%; bottom: 20px; }
     .adelita, .adelita-final, .galeria-final { height: 300px; }
     .logos img, .logo-animada { height: 100px; }
+    #telaFinal .logos img { height: 80px; }
     .botao { font-size: 22px; padding: 10px 30px; }
     .final-personagens { padding: 0 10px; }
-    #logoCentralFinal img { width: 200px; }
-    .galeria-final { height: 250px; }
-    #composteira { width: 200px; }
-    #itensCompostagem { width: 90%; left: 5%; }
+    #composteira { width: 250px; }
+    .item { width: 70px; }
 }
