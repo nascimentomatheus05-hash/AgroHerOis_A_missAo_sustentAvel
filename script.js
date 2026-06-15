@@ -73,7 +73,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // =============================================
-    // INTRODUÇÃO (igual)
+    // TELA INICIAL E INTRODUÇÃO (mantido igual)
     // =============================================
     const telaInicial = document.getElementById("telaInicial");
     const introducao = document.getElementById("introducao");
@@ -97,7 +97,7 @@ document.addEventListener("DOMContentLoaded", function() {
         "Sem as abelhas e outros polinizadores, a produção de muitos alimentos seria muito menor.\n\nPor isso, sua missão será ajudar uma abelha a coletar flores.",
         "Como jogar:\n\n⬆️ Seta para cima = subir\n⬇️ Seta para baixo = descer",
         "Seu objetivo é:\n\nColetar flores pelo caminho.\nCada flor ajuda na polinização e aumenta sua pontuação.",
-        "Mas atenção!\n\n🚫 Não chegue perto do fogo.\n🚫Não chegue perto da fumaça.\nSe chegar perto o calor e resquicio de fumaça, fará com que você perca vida você tem 3.",
+        "Mas atenção!\n\n🚫 Não chegue perto do fogo.\n🚫 Nem da fumaça.\nSe encostar, perderá energia.",
         "Quando você coletar 10 flores, ajudará a natureza e mostrará como a polinização é essencial para um Agro Forte e um Futuro Sustentável.",
         "Clique para começar sua missão."
     ];
@@ -152,7 +152,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     // =============================================
-    // FASE ABELHA (completa)
+    // FASE ABELHA (completa, igual ao original)
     // =============================================
     let jogoRodando = false, floresColetadas = 0, vidas = 3, posYAbelha = 300;
     let intervaloObjetos, animacaoLoop, velocidadeAtual = 2.8, acelerou = false, vitoria = false;
@@ -378,7 +378,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // =============================================
-    // PLANTIO – APENAS SOJA (SIMPLES E FUNCIONAL)
+    // PLANTIO – APENAS SOJA COM IMAGEM CLICÁVEL
     // =============================================
     const transicaoPlantio = document.getElementById("transicaoPlantio");
     const textoPlantioDiv = document.getElementById("textoPlantio");
@@ -389,11 +389,12 @@ document.addEventListener("DOMContentLoaded", function() {
     const setaRegador = document.getElementById("setaRegador");
     const plantinha = document.getElementById("plantinha");
     const areaPlantio = document.getElementById("areaPlantio");
+    let sementePlantada = false;
 
     const falasPlantio = [
         "Parabéns, [NOME]! Você separou os resíduos corretamente e produziu adubo natural.",
         "Agora o solo está preparado! Lembra das abelhas? Elas ajudam as plantas a produzir frutos.",
-        "Sua missão: plante a semente de SOJA e regue para ela crescer.",
+        "Sua missão: clique na semente de SOJA, depois regue para ela crescer.",
         "Clique em COMEÇAR para iniciar o plantio."
     ];
     let falaPlantioAtual = 0;
@@ -429,33 +430,47 @@ document.addEventListener("DOMContentLoaded", function() {
 
     function iniciarPlantioFase() {
         plantioTela.classList.add("ativa");
-        // Mostra apenas a semente de soja
+        
+        // Resetar estado
+        regador.style.display = "none";
+        plantinha.style.display = "none";
+        setaRegador.style.display = "none";
+        sementePlantada = false;
+        const plantaExistente = document.getElementById("plantaFinal");
+        if (plantaExistente) plantaExistente.remove();
+        
+        // Limpar e criar a semente de soja como imagem
         const container = document.getElementById("sementes");
         if (container) {
-            container.innerHTML = ""; // limpa
-            const btnSoja = document.createElement("button");
-            btnSoja.textContent = "🌱 SOJA";
-            btnSoja.style.cssText = `
-                padding: 20px 40px;
-                font-size: 28px;
-                font-weight: bold;
-                background-color: #43a047;
-                color: white;
-                border: none;
-                border-radius: 60px;
+            container.innerHTML = "";
+            const imgSemente = document.createElement("img");
+            imgSemente.src = "sementesoja.png";
+            imgSemente.alt = "Semente de Soja";
+            imgSemente.className = "semente-soja";
+            imgSemente.style.cssText = `
+                width: 150px;
                 cursor: pointer;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
                 transition: transform 0.2s;
                 display: block;
                 margin: 50px auto;
+                border-radius: 20px;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.2);
             `;
-            btnSoja.addEventListener("mouseenter", () => btnSoja.style.transform = "scale(1.05)");
-            btnSoja.addEventListener("mouseleave", () => btnSoja.style.transform = "scale(1)");
-            btnSoja.addEventListener("click", () => {
-                // Ao clicar no botão, mostra o regador
-                alert("🌱 Você escolheu a semente de SOJA! Agora regue a planta.");
+            imgSemente.addEventListener("mouseenter", () => imgSemente.style.transform = "scale(1.05)");
+            imgSemente.addEventListener("mouseleave", () => imgSemente.style.transform = "scale(1)");
+            imgSemente.addEventListener("click", (e) => {
+                e.stopPropagation();
+                if (sementePlantada) {
+                    alert("Você já plantou a semente! Clique no regador.");
+                    return;
+                }
+                sementePlantada = true;
+                alert("🌱 Você plantou a semente de SOJA! Agora regue a planta.");
                 regador.style.display = "block";
                 setaRegador.style.display = "block";
+                // Esconde a semente
+                imgSemente.style.display = "none";
+                // Configura o regador
                 if (regador._regarHandler) regador.removeEventListener("click", regador._regarHandler);
                 const regarHandler = function() {
                     regador.style.display = "none";
@@ -465,24 +480,16 @@ document.addEventListener("DOMContentLoaded", function() {
                 };
                 regador.addEventListener("click", regarHandler);
                 regador._regarHandler = regarHandler;
-                // Esconde o botão após a escolha
-                btnSoja.style.display = "none";
             });
-            container.appendChild(btnSoja);
+            container.appendChild(imgSemente);
         }
-        // Reset do regador e planta
-        regador.style.display = "none";
-        plantinha.style.display = "none";
-        setaRegador.style.display = "none";
-        const plantaExistente = document.getElementById("plantaFinal");
-        if (plantaExistente) plantaExistente.remove();
     }
 
     function crescerPlanta() {
         if (plantinha.parentNode) plantinha.remove();
         const plantaFinal = document.createElement("img");
         plantaFinal.src = "sojacrece.png";
-        plantaFinal.onerror = function() { this.src = "sojacrece.png"; };
+        plantaFinal.onerror = function() { console.warn("sojacrece.png não encontrada, usando fallback"); this.src = "sojacrece.png"; };
         plantaFinal.id = "plantaFinal";
         plantaFinal.style.cssText = "position:absolute; bottom:80px; left:50%; transform:translateX(-50%); width:100px; transition:width 0.1s linear;";
         areaPlantio.appendChild(plantaFinal);
@@ -508,7 +515,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // =============================================
-    // CERTIFICADO E PDF (igual)
+    // CERTIFICADO E PDF
     // =============================================
     const btnCertificado = document.getElementById("btnCertificado");
     const certificadoTela = document.getElementById("certificadoTela");
@@ -531,5 +538,5 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    console.log("✅ Jogo carregado – abelha a 40%, plantio apenas com SOJA (simples e funcional).");
+    console.log("✅ Jogo carregado – abelha a 40%, plantio com imagem sementesoja.png clicável");
 });
