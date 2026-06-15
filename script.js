@@ -88,14 +88,14 @@ document.addEventListener("DOMContentLoaded", function() {
     const falas = [
         "Olá! Eu sou a Adelita e faço parte dos AgroHeróis!\n\nQual é o seu nome?",
         "Que nome lindo, [NOME]!\n\nHoje você vai participar de uma missão muito importante.\n\nEscolha seu personagem.",
-        "UAL!!!\n\nO tema da nossa aventura é:\n\nAgro Forte, Futuro Sustentável:\nEquilíbrio entre Produção e Meio Ambiente.",
+        "UAL!!!\n\nO  A nossa aventura é:\n\nAgro Forte, Futuro Sustentável:\nEquilíbrio entre Produção e Meio Ambiente.",
         "Para produzir alimentos e cuidar da natureza ao mesmo tempo, precisamos da ajuda de muitos seres vivos.\n\nUm dos mais importantes é a abelha.",
         "As abelhas realizam a polinização, um processo que ajuda as plantas a produzir flores, frutos e sementes.\n\nQuando uma abelha visita uma flor, ela transporta o pólen para outras flores.",
         "Graças à polinização, podemos ter alimentos como:\n\n🍎 Maçã, 🍓 Morango, 🍉 Melancia, 🥒 Pepino, ☕ Café",
         "Sem as abelhas e outros polinizadores, a produção de muitos alimentos seria muito menor.\n\nPor isso, sua missão será ajudar uma abelha a coletar flores.",
         "Como jogar:\n\n⬆️ Seta para cima = subir\n⬇️ Seta para baixo = descer",
         "Seu objetivo é:\n\nColetar flores pelo caminho.\nCada flor ajuda na polinização e aumenta sua pontuação.",
-        "Mas atenção!\n\n🚫 Não chegue perto do fogo.\n🚫 Nem da fumaça.\nSe encostar, perderá energia.",
+        "Mas atenção!\n\n🚫 Não chegue perto do fogo.\n🚫 Não chegue perto da fumaça.\n Se você chegar perto, perderá 1 das 3 vidas, pois ao redor da fumaça e do fogo há calor intenso e gases prejudiciais.",
         "Quando você coletar 10 flores, ajudará a natureza e mostrará como a polinização é essencial para um Agro Forte e um Futuro Sustentável.",
         "Clique para começar sua missão."
     ];
@@ -530,7 +530,7 @@ document.addEventListener("DOMContentLoaded", function() {
         const telaFinal = document.getElementById("telaFinal");
         const mensagemFinal = document.getElementById("mensagemFinal");
         telaFinal.classList.add("ativa");
-        mensagemFinal.innerHTML = `Parabéns, <strong>${nomeJogador}</strong>!<br><br>Você ajudou as abelhas, fez compostagem, plantou a semente de ${sementeEscolhida.toUpperCase()} e cuidou da sua planta até ela crescer.<br><br>Muito obrigada pela sua ajuda!<br><br>Agora você é um verdadeiro <strong>AgroHerói do Futuro Sustentável</strong>.<br><br>Agro Forte, Futuro Sustentável: equilíbrio entre produção e meio ambiente.<br><br>Obrigado por participar desta missão`;
+        mensagemFinal.innerHTML = `Parabéns, <strong>${nomeJogador}</strong>!<br><br>Você ajudou as abelhas, fez compostagem, plantou a semente de ${sementeEscolhida.toUpperCase()} e cuidou da sua planta até ela crescer.<br><br>Muito obrigada pela sua ajuda!<br><br>Agora você é um verdadeiro <strong>AgroHerói do Futuro Sustentável</strong>.<br><br>Agro Forte, Futuro Sustentável: equilíbrio entre produção e meio ambiente.<br><br>Obrigado por participar desta missão, até a proxima!`;
     }
 
     // CERTIFICADO
