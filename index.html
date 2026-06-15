@@ -38,6 +38,17 @@
     <source src="musica.mp3" type="audio/mpeg">
 </audio>
 
+<!-- EFEITOS SONOROS -->
+<audio id="somColeta" preload="auto">
+    <source src="coleta.mp3" type="audio/mpeg">
+</audio>
+<audio id="somErro" preload="auto">
+    <source src="erro.mp3" type="audio/mpeg">
+</audio>
+<audio id="somAcertoCompostagem" preload="auto">
+    <source src="acerto.mp3" type="audio/mpeg">
+</audio>
+
 <!-- INTRODUÇÃO -->
 <section id="introducao" class="tela">
     <img src="1.png" class="fundo" alt="Fundo">
@@ -115,7 +126,7 @@
 <!-- FASE PLANTIO -->
 <section id="plantioTela" class="tela">
     <img src="2.png" class="fundo">
-    <div id="sementes"></div> <!-- as sementes serão criadas dinamicamente pelo JS -->
+    <div id="sementes"></div>
     <div id="areaPlantio">
         <img src="terra.png" id="terra">
         <img src="regua.png" id="regador" style="display:none;">
@@ -124,12 +135,11 @@
     </div>
 </section>
 
-<!-- TELA FINAL (com logo centralizada e galeria à direita) -->
+<!-- TELA FINAL -->
 <section id="telaFinal" class="tela">
     <img src="1.png" class="fundo">
-    <!-- Logo centralizada grande -->
-    <div id="logoCentralFinal">
-        <img src="logo.png" alt="Logo AgroHeróis">
+    <div class="logos">
+        <img src="logo.png"><img src="logo1.png"><img src="logo2.png">
     </div>
     <div class="final-personagens">
         <img src="principal3.png" class="adelita-final">
