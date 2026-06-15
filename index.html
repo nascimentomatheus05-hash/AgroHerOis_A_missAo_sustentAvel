@@ -57,7 +57,7 @@
     </div>
 </section>
 
-<!-- TRANSIÇÃO 1 (não utilizada, mas mantida) -->
+<!-- TRANSIÇÃO 1 (não utilizada) -->
 <section id="transicao1" class="tela">
     <img src="1.png" class="fundo">
     <div class="logos"><img src="logo.png"><img src="logo1.png"><img src="logo2.png"></div>
@@ -112,10 +112,10 @@
     <div class="caixaDialogo"><div id="textoPlantio"></div><button id="btnIniciarPlantio" class="botao" style="display:none;">COMEÇAR</button><button id="btnProxFalaPlantio" class="seta">➜</button></div>
 </section>
 
-<!-- FASE PLANTIO (CORRIGIDA: as sementes serão geradas dinamicamente pelo JS) -->
+<!-- FASE PLANTIO -->
 <section id="plantioTela" class="tela">
     <img src="2.png" class="fundo">
-    <div id="sementes"></div>
+    <div id="sementes"></div> <!-- as sementes serão criadas dinamicamente pelo JS -->
     <div id="areaPlantio">
         <img src="terra.png" id="terra">
         <img src="regua.png" id="regador" style="display:none;">
@@ -124,10 +124,13 @@
     </div>
 </section>
 
-<!-- TELA FINAL -->
+<!-- TELA FINAL (com logo centralizada e galeria à direita) -->
 <section id="telaFinal" class="tela">
     <img src="1.png" class="fundo">
-    <div class="logos"><img src="logo.png"><img src="logo1.png"><img src="logo2.png"></div>
+    <!-- Logo centralizada grande -->
+    <div id="logoCentralFinal">
+        <img src="logo.png" alt="Logo AgroHeróis">
+    </div>
     <div class="final-personagens">
         <img src="principal3.png" class="adelita-final">
         <img src="galeria.png" class="galeria-final">
