@@ -78,11 +78,7 @@ Este jogo foi realizado com **sonho, carinho e atenção** – cada detalhe foi 
 - À **SEED** (Secretaria de Estado da Educação do Paraná) e à **NRE de Paranavaí**, pelo suporte à inovação pedagógica.
 - Ao **embaixador da programação Fernando Masut**, pela inspiração e incentivo à tecnologia.
 - À **Alura**, pelo curso de formação que contribuiu para o meu aprendizado em programação.
-- Ao **Gemini (Google)**, pela assistência com a geração de textos, correções e ideias criativas.
-- Ao **ChatGPT (OpenAI)**, pela criação das **imagens** (`prompt` gerado por mim e executado pelo ChatGPT).
-- Aos criadores da **letra da música** de fundo (autoria própria) – a canção foi composta especialmente para este projeto.
-- Ao programa **Agrinho**, pelo conteúdo estudado que inspirou toda a temática ambiental e agrícola do jogo.
-- A todas as **pesquisas** realizadas sobre polinização, compostagem e sustentabilidade, que embasaram o conteúdo educativo.
+
 
 Sem vocês, este sonho não seria possível. Muito obrigado!
 
@@ -94,9 +90,7 @@ Sem vocês, este sonho não seria possível. Muito obrigado!
   Colégio Estadual Antonio Tortato – Paranacity
 - **Orientadora:** Professora Mestra Patrícia Ariadny Ferro (auxílio nos códigos e orientação pedagógica)
 - **Imagens:** Geradas com auxílio do ChatGPT (prompts do desenvolvedor)
-- **Textos e ajustes:** Gerados com auxílio do Gemini
-- **Música de fundo:** Autoria própria, com curso de som realizado na Alura
-- **Efeitos sonoros:** Criados com Web Audio API (sintetizados)
+- **Música de fundo:** Autoria própria, com curso de som realizado no Gemini
 - **Conteúdo educativo:** Baseado no programa Agrinho e em pesquisas independentes
 - **Apoio Institucional:** Colégio Estadual Antonio Tortato, NRE Paranavaí, SEED, FAEP, SENAR
 
