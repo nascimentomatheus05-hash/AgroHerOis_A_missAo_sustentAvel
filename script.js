@@ -86,7 +86,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     let nomeJogador = "", personagemEscolhido = "", falaAtual = 0;
     const falas = [
-        "Olá! Eu sou a Adelita e faço parte dos AgroHeróis! cClique no botão 🎵 para ouvir a nossa música. Sempre que quiser desligá-la, basta clicar no mesmo botão novamente.\n\nQual é o seu nome?",
+        "Olá! Eu sou a Adelita e faço parte dos AgroHeróis! Clique no botão 🎵 para ouvir a nossa música. Sempre que quiser desligá-la, basta clicar no mesmo botão novamente.\n\nQual é o seu nome?",
         "Que nome lindo, [NOME]!\n\nHoje você vai participar de uma missão muito importante.\n\nEscolha seu personagem.",
         "UAL!!!\n\nO  A nossa aventura é:\n\nAgro Forte, Futuro Sustentável:\nEquilíbrio entre Produção e Meio Ambiente.",
         "Para produzir alimentos e cuidar da natureza ao mesmo tempo, precisamos da ajuda de muitos seres vivos.\n\nUm dos mais importantes é a abelha.",
