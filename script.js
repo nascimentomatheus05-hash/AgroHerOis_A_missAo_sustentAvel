@@ -1,7 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
-    // =============================================
-    // MÚSICA
-    // =============================================
+    // MÚSICA E SONS
     const botaoMusica = document.getElementById("btnMusica");
     const audio = document.getElementById("musicaFundo");
     let musicaTocando = false;
@@ -21,9 +19,11 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // =============================================
-    // ABELHA A 40% DA LARGURA
-    // =============================================
+    const somColeta = document.getElementById("somColeta");
+    const somErro = document.getElementById("somErro");
+    const somAcertoCompostagem = document.getElementById("somAcertoCompostagem");
+
+    // ABELHA A 40%
     const abelhaImg = document.getElementById('abelha');
     let abelhaElement = abelhaImg;
 
@@ -72,9 +72,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
-    // =============================================
     // TELA INICIAL E INTRODUÇÃO
-    // =============================================
     const telaInicial = document.getElementById("telaInicial");
     const introducao = document.getElementById("introducao");
     const btnComecar = document.getElementById("btnComecar");
@@ -151,9 +149,7 @@ document.addEventListener("DOMContentLoaded", function() {
         menina.style.border = "none";
     });
 
-    // =============================================
     // FASE ABELHA
-    // =============================================
     let jogoRodando = false, floresColetadas = 0, vidas = 3, posYAbelha = 300;
     let intervaloObjetos, animacaoLoop, velocidadeAtual = 2.8, acelerou = false, vitoria = false;
     const faseAbelha = document.getElementById("faseAbelha");
@@ -244,6 +240,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     floresColetadas++;
                     atualizarHUD();
                     obj.remove();
+                    if (somColeta) somColeta.play().catch(e => console.log("somColeta", e));
                     if (floresColetadas >= 5 && !acelerou) {
                         acelerou = true;
                         velocidadeAtual = 4.2;
@@ -257,6 +254,7 @@ document.addEventListener("DOMContentLoaded", function() {
                         obj.dataset.hit = "true";
                         vidas--;
                         atualizarHUD();
+                        if (somErro) somErro.play().catch(e => console.log("somErro", e));
                         if (vidas <= 0 && !vitoria) {
                             vitoria = true;
                             perderFase();
@@ -295,9 +293,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // =============================================
     // COMPOSTAGEM
-    // =============================================
     const transicaoCompostagem = document.getElementById("transicaoCompostagem");
     const textoCompostagemDiv = document.getElementById("textoCompostagem");
     const btnProxFalaCompostagem = document.getElementById("btnProxFalaCompostagem");
@@ -365,6 +361,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 acertosCompostagem++;
                 contadorCompostagemSpan.innerText = `Acertos: ${acertosCompostagem} / 4`;
                 item.style.display = "none";
+                if (somAcertoCompostagem) somAcertoCompostagem.play().catch(e => console.log("somAcerto", e));
                 if (acertosCompostagem >= 4) {
                     alert(`Parabéns ${nomeJogador}! Você produziu adubo natural!`);
                     compostagemTela.classList.remove("ativa");
@@ -377,9 +374,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // =============================================
-    // PLANTIO – 3 SEMENTES HORIZONTAIS
-    // =============================================
+    // PLANTIO
     const transicaoPlantio = document.getElementById("transicaoPlantio");
     const textoPlantioDiv = document.getElementById("textoPlantio");
     const btnProxFalaPlantio = document.getElementById("btnProxFalaPlantio");
@@ -538,9 +533,7 @@ document.addEventListener("DOMContentLoaded", function() {
         mensagemFinal.innerHTML = `Parabéns, <strong>${nomeJogador}</strong>!<br><br>Você ajudou as abelhas, fez compostagem, plantou a semente de ${sementeEscolhida.toUpperCase()} e cuidou da sua planta até ela crescer.<br><br>Muito obrigada pela sua ajuda!<br><br>Agora você é um verdadeiro <strong>AgroHerói do Futuro Sustentável</strong>.<br><br>Agro Forte, Futuro Sustentável: equilíbrio entre produção e meio ambiente.<br><br>Obrigado por participar desta missão`;
     }
 
-    // =============================================
-    // CERTIFICADO E PDF
-    // =============================================
+    // CERTIFICADO
     const btnCertificado = document.getElementById("btnCertificado");
     const certificadoTela = document.getElementById("certificadoTela");
     const nomeCertificadoSpan = document.getElementById("nomeCertificado");
@@ -562,5 +555,5 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    console.log("✅ Jogo carregado – abelha a 40%, plantio com 3 sementes horizontais e crescimento específico.");
+    console.log("✅ Jogo carregado – abelha a 40%, plantio com 3 sementes, efeitos sonoros, logos maiores e centralizadas, compostagem centralizada.");
 });
